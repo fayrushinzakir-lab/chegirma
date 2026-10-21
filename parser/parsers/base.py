@@ -29,6 +29,10 @@ class Deal:
     created_at: str = ""
     ends_at: str = ""
     promoted: bool = False
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    phone: str = ""
+    seller: str = ""
 
     def to_json(self) -> dict:
         d = asdict(self)
@@ -50,6 +54,10 @@ class Deal:
             "createdAt": d["created_at"],
             "endsAt": d["ends_at"],
             "promoted": d["promoted"],
+            "lat": d["lat"],
+            "lon": d["lon"],
+            "phone": d["phone"],
+            "seller": d["seller"],
         }
 
 
@@ -140,6 +148,9 @@ _CATEGORY_KEYWORDS = {
              "велосипед детск", "самокат"],
     "household": ["порошок", "kukun", "моющ", "бытовая химия", "ariel", "fairy", "гель для стирк",
                   "кондиционер для бель", "посуд", "idish", "чистящ", "салфетк", "пакет"],
+    "restaurants": ["ресторан", "restoran", "кафе", "kafe", "пицц", "pizza", "суши", "sushi",
+                    "доставка еды", "ovqat yetkaz", "fast food", "бургер", "burger", "лаваш",
+                    "шаурм", "shaurma", "банкет", "to'yxona", "кейтеринг", "osh ", "плов"],
 }
 
 

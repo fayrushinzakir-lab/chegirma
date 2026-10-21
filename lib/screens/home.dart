@@ -15,8 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int chip = 0;
-  static const chips = ['Все', 'Продукты', 'Стройка', 'Техника', 'Телефоны', 'Одежда', 'Мебель'];
-  static const chipCat = [null, 'food', 'building', 'electronics', 'phones', 'clothing', 'furniture'];
+  static const chips = ['Все', 'Продукты', 'Стройка', 'Техника', 'Телефоны', 'Одежда', 'Мебель', 'Рестораны'];
+  static const chipCat = [null, 'food', 'building', 'electronics', 'phones', 'clothing', 'furniture', 'restaurants'];
 
   @override
   void initState() {
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               Row(children: const [
-                Text('chegirma', style: T.logo),
+                Text('chegirmalar', style: T.logo),
                 SizedBox(width: 6),
                 Padding(padding: EdgeInsets.only(bottom: 4), child: CircleAvatar(radius: 4, backgroundColor: C.green)),
               ]),

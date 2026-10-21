@@ -31,7 +31,14 @@
       "Bash(python3 -m json.tool)",
       "Bash(curl -sL -m 60 -o assets/fonts/Manrope.ttf https://github.com/google/fonts/raw/main/ofl/manrope/Manrope%5Bwght%5D.ttf)",
       "Bash(cd *)",
-      "Bash(curl -s -m 15 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124 Safari/537.36' -o /tmp/testimg.jpg -w 'http=%{http_code} type=%{content_type} size=%{size_download}\\\\n' 'https://frankfurt.apollo.olxcdn.com:443/v1/files/zcotzyj72ccf2-UZ/image;s=600x600')"
+      "Bash(curl -s -m 15 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124 Safari/537.36' -o /tmp/testimg.jpg -w 'http=%{http_code} type=%{content_type} size=%{size_download}\\\\n' 'https://frankfurt.apollo.olxcdn.com:443/v1/files/zcotzyj72ccf2-UZ/image;s=600x600')",
+      "Bash(cp /Users/zakir.fayrushin/Downloads/chegirma.png assets/logo.png)",
+      "Bash(python3 -c \"from PIL import Image; im=Image.open\\('assets/logo.png'\\); print\\('size:', im.size, 'mode:', im.mode\\)\")",
+      "Bash(sips -g pixelWidth -g pixelHeight assets/logo.png)",
+      "Bash(python3 -)",
+      "Bash(curl -s -m 15 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124 Safari/537.36' 'https://www.olx.uz/api/v1/offers/?limit=1&query=chegirma')",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('docs/deals.json'\\)\\);print\\(d['deals'][0]['id'].replace\\('olx-',''\\)\\)\")",
+      "Bash(curl -s -m 12 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124 Safari/537.36' https://www.olx.uz/api/v1/offers/__TRACKED_VAR__/limited-phones/)"
     ]
   }
 }

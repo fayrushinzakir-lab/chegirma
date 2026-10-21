@@ -32,6 +32,7 @@ const categories = <Category>[
   Category('pharmacy', 'Аптека', Icons.medication_outlined, Tint.soft),
   Category('kids', 'Детям', Icons.child_care_outlined, Tint.soft),
   Category('auto', 'Авто', Icons.directions_car_outlined, Tint.tech),
+  Category('restaurants', 'Рестораны', Icons.restaurant_outlined, Tint.food),
   Category('other', 'Разное', Icons.local_offer_outlined, Tint.soft),
 ];
 
@@ -54,12 +55,17 @@ class Deal {
   final String imageUrl;
   final String url;
   final String endsAt;
+  final double? lat;
+  final double? lon;
+  final String phone;
+  final String seller;
   bool favorite;
 
   Deal({
     required this.id, required this.title, required this.store, required this.source,
     required this.category, this.oldPrice, this.newPrice, this.discountPercent,
     this.city = '', this.address = '', this.imageUrl = '', this.url = '', this.endsAt = '',
+    this.lat, this.lon, this.phone = '', this.seller = '',
     this.favorite = false,
   });
 
@@ -77,7 +83,17 @@ class Deal {
         imageUrl: (j['imageUrl'] ?? '').toString(),
         url: (j['url'] ?? '').toString(),
         endsAt: (j['endsAt'] ?? '').toString(),
+        lat: _asDouble(j['lat']),
+        lon: _asDouble(j['lon']),
+        phone: (j['phone'] ?? '').toString(),
+        seller: (j['seller'] ?? '').toString(),
       );
+
+  static double? _asDouble(dynamic v) {
+    if (v == null) return null;
+    if (v is num) return v.toDouble();
+    return double.tryParse('$v');
+  }
 
   static int? _asInt(dynamic v) {
     if (v == null) return null;

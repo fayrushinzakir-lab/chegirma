@@ -18,6 +18,11 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
     if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
+  Future<void> _call() async {
+    if (widget.deal.phone.isEmpty) return;
+    await launchUrl(Uri.parse('tel:${widget.deal.phone}'));
+  }
+
   @override
   Widget build(BuildContext context) {
     final d = widget.deal;
@@ -108,6 +113,14 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                         _infoRow(Icons.place_outlined, 'Адрес', '${d.city}${d.address.isNotEmpty ? ', ${d.address}' : ''}'),
                         const SizedBox(height: 14),
                       ],
+                      if (d.seller.isNotEmpty) ...[
+                        _infoRow(Icons.storefront_outlined, 'Продавец', d.seller),
+                        const SizedBox(height: 14),
+                      ],
+                      if (d.phone.isNotEmpty) ...[
+                        _infoRow(Icons.call_outlined, 'Телефон', d.phone),
+                        const SizedBox(height: 14),
+                      ],
                       _infoRow(Icons.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
                     ])),
                   ],
@@ -116,15 +129,21 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
               Container(
                 padding: EdgeInsets.fromLTRB(20, 12, 20, 12 + MediaQuery.of(context).padding.bottom),
                 decoration: const BoxDecoration(color: C.bg, border: Border(top: BorderSide(color: C.border))),
-                child: Row(children: [
-                  Expanded(flex: 3, child: PrimaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
-                  const SizedBox(width: 10),
-                  Expanded(flex: 2, child: SecondaryButton('В список', icon: Icons.add, onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Добавлено в список', style: TextStyle(fontFamily: kFont)),
-                      backgroundColor: C.card, duration: Duration(seconds: 1)));
-                  })),
-                ]),
+                child: d.phone.isNotEmpty
+                    ? Row(children: [
+                        Expanded(flex: 3, child: PrimaryButton('Позвонить', icon: Icons.call, onTap: _call)),
+                        const SizedBox(width: 10),
+                        Expanded(flex: 2, child: SecondaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
+                      ])
+                    : Row(children: [
+                        Expanded(flex: 3, child: PrimaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
+                        const SizedBox(width: 10),
+                        Expanded(flex: 2, child: SecondaryButton('В список', icon: Icons.add, onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Добавлено в список', style: TextStyle(fontFamily: kFont)),
+                            backgroundColor: C.card, duration: Duration(seconds: 1)));
+                        })),
+                      ]),
               ),
             ]),
           ),
