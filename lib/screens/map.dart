@@ -7,6 +7,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
 import 'deal_detail.dart';
+import 'search.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -112,7 +113,8 @@ class _MapScreenState extends State<MapScreen> {
       SafeArea(child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
         child: Column(children: [
-          const SearchBarField(hint: 'Скидки рядом', showFilter: false),
+          SearchBarField(hint: 'Скидки рядом', showFilter: false,
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen()))),
           const SizedBox(height: 12),
           SizedBox(height: 38, child: ListView.separated(
             scrollDirection: Axis.horizontal,

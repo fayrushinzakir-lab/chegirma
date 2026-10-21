@@ -140,8 +140,9 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                         Expanded(flex: 3, child: PrimaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
                         const SizedBox(width: 10),
                         Expanded(flex: 2, child: SecondaryButton('В список', icon: Icons.add, onTap: () {
+                          DealsStore.I.addWatch(d.title);
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text('Добавлено в список', style: TextStyle(fontFamily: kFont)),
+                            content: Text('Добавлено в список покупок', style: TextStyle(fontFamily: kFont, color: C.text)),
                             backgroundColor: C.card, duration: Duration(seconds: 1)));
                         })),
                       ]),

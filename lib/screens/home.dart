@@ -245,7 +245,11 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesScreen()))),
           const SizedBox(width: 10),
           Stack(children: [
-            const IconCircleButton(Icons.notifications_none_rounded),
+            IconCircleButton(Icons.notifications_none_rounded, onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Уведомления о скидках появятся здесь', style: TextStyle(fontFamily: kFont, color: C.text)),
+                backgroundColor: C.card, duration: Duration(seconds: 2)));
+            }),
             Positioned(right: 11, top: 11, child: Container(width: 8, height: 8,
                 decoration: BoxDecoration(color: C.red, shape: BoxShape.circle, border: Border.all(color: C.bg, width: 1.5)))),
           ]),

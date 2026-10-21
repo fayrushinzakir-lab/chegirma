@@ -40,6 +40,27 @@ class DealsStore extends ChangeNotifier {
 
   List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
 
+  // ───────── Список покупок (отслеживание товаров) ─────────
+  final List<String> watchlist = ['Кофе Jacobs', 'Подгузники Huggies', 'Шуруповёрт'];
+
+  void addWatch(String q) {
+    final s = q.trim();
+    if (s.isEmpty || watchlist.any((w) => w.toLowerCase() == s.toLowerCase())) return;
+    watchlist.insert(0, s);
+    notifyListeners();
+  }
+
+  void removeWatch(String q) {
+    watchlist.remove(q);
+    notifyListeners();
+  }
+
+  /// Лучшая найденная скидка по запросу (или null).
+  Deal? bestMatch(String q) {
+    final m = search(q);
+    return m.isEmpty ? null : m.first;
+  }
+
   // Выбранный город (null = все города).
   String? selectedCity;
 
