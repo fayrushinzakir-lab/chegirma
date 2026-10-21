@@ -292,15 +292,22 @@ class _HotBanner extends StatefulWidget {
 class _HotBannerState extends State<_HotBanner> {
   final controller = PageController();
   int page = 0;
-  Duration left = const Duration(hours: 5, minutes: 23, seconds: 10);
+  Duration left = Duration.zero;
   Timer? tick, auto;
+
+  Duration _untilMidnight() {
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
+    return midnight.difference(now);
+  }
 
   @override
   void initState() {
     super.initState();
+    left = _untilMidnight();
     tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
-      setState(() => left = left.inSeconds > 0 ? left - const Duration(seconds: 1) : Duration.zero);
+      setState(() => left = _untilMidnight());
     });
     auto = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted || !controller.hasClients) return;

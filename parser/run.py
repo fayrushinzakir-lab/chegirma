@@ -49,12 +49,39 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             print(f"  ! источник {name} упал: {e}")
 
-    # фильтр истёкших + с валидной ценой
-    all_deals = [d for d in all_deals if d.new_price and not _is_expired(d, now)]
-    # дедуп
+    # фильтр качества: валидная цена, есть фото, не истёкшие, не абсурд
+    def _ok(d: Deal) -> bool:
+        if not d.new_price or d.new_price < 1000:
+            return False
+        if not d.image_url:
+            return False
+        if _is_expired(d, now):
+            return False
+        pct = d.discount_percent
+        if pct is not None and (pct < 3 or pct > 95):
+            return False
+        # абсурдная старая цена
+        if d.old_price and d.new_price and (d.old_price <= d.new_price or d.old_price > d.new_price * 15):
+            return False
+        return True
+
+    all_deals = [d for d in all_deals if _ok(d)]
     all_deals = dedupe(all_deals)
-    # сортировка: сначала с известной скидкой (по %), затем свежие
-    all_deals.sort(key=lambda d: (d.discount_percent or -1), reverse=True)
+
+    # сортировка по качеству (как в приложении): настоящая скидка с фото — вперёд
+    def _quality(d: Deal) -> int:
+        s = 0
+        if d.old_price and d.discount_percent:
+            s += 200 + d.discount_percent
+        elif d.discount_percent:
+            s += 100 + d.discount_percent
+        if d.source != "olx":
+            s += 40
+        if d.category == "other":
+            s -= 70
+        return s
+
+    all_deals.sort(key=_quality, reverse=True)
 
     # Защита: если все источники упали (напр. 403 с заблокированного IP),
     # НЕ затираем прошлые хорошие данные нулём — выходим, оставив файл как есть.

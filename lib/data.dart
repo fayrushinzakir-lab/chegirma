@@ -79,13 +79,27 @@ class DealsStore extends ChangeNotifier {
     return e.map((x) => x.key).toList();
   }
 
+  /// Оценка качества скидки — лучшее показываем первым.
+  static int quality(Deal d) {
+    var s = 0;
+    if (d.oldPrice != null && d.percent != null) {
+      s += 200 + (d.percent ?? 0);        // настоящая скидка (старая/новая цена)
+    } else if (d.percent != null) {
+      s += 100 + (d.percent ?? 0);        // процент извлечён из текста
+    }
+    if (d.imageUrl.isNotEmpty) s += 30;
+    if (d.source != 'olx') s += 40;       // ритейлеры чище доски объявлений
+    if (d.category == 'other') s -= 70;   // «Разное» — ниже
+    return s;
+  }
+
   List<Deal> byCategory(String? cat) {
     var list = all.where((d) {
       if (cat != null && d.category != cat) return false;
       if (selectedCity != null && d.city != selectedCity) return false;
       return true;
     }).toList();
-    list.sort((a, b) => (b.percent ?? 0).compareTo(a.percent ?? 0));
+    list.sort((a, b) => quality(b).compareTo(quality(a)));
     return list;
   }
 
