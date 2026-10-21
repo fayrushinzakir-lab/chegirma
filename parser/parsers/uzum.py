@@ -89,7 +89,7 @@ def parse() -> list[Deal]:
                             title=title,
                             store="Uzum Market",
                             source="uzum",
-                            category=categorize(f"{title} {q}"),
+                            category=categorize(title),
                             new_price=new_price,
                             currency="UZS",
                             old_price=old_price,
