@@ -1,10 +1,14 @@
 name: parse-deals
 
-# Сборщик скидок: по расписанию каждые 2 часа + вручную.
+# Сборщик скидок.
+# ВНИМАНИЕ: OLX блокирует IP дата-центров GitHub (403), поэтому облачный
+# раннер (ubuntu-latest) НЕ подходит для сбора. Расписание включится, когда
+# выберем место запуска с «белым» IP — self-hosted runner на Mac/VPS в Уз/ЕС.
+# Пока — только ручной запуск (для теста инфраструктуры).
 on:
-  schedule:
-    - cron: "0 */2 * * *"
   workflow_dispatch:
+  # schedule:
+  #   - cron: "0 */2 * * *"   # включить на self-hosted runner
 
 permissions:
   contents: write
