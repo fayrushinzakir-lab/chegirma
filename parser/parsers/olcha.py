@@ -11,11 +11,11 @@ import urllib.request
 
 from .base import Deal, categorize
 
-API = "https://mobile.olcha.uz/api/v2/products?page={}"
-IMG_PLACEHOLDER = ""
+# sale=1 — только товары со скидкой (все 14/страница со снижением цены).
+API = "https://mobile.olcha.uz/api/v2/products?page={}&sale=1"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-PAGES = 60
+PAGES = 50
 
 
 def _ctx() -> ssl.SSLContext:

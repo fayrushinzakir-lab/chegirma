@@ -45,6 +45,13 @@ QUERIES = [
     "ko'ylak chegirma", "sumka aksiya", "palto chegirma", "sport kiyim",
     "restoran aksiya", "kafe chegirma", "pizza aksiya", "dostavka ovqat", "banket to'yxona",
     "mebel divan chegirma", "gaz plita aksiya", "noutbuk aksiya", "monitor chegirma",
+    # опт / оптовые скидки
+    "optom", "оптом", "ulgurji", "optom narx", "оптовая цена", "optom sotuv",
+    "optom kiyim", "оптом одежда", "optom oziq ovqat", "оптом продукты", "optom poyabzal",
+    # ещё продукты/одежда/рестораны
+    "sut mahsulotlari", "гипермаркет скидка", "sportivnoe pitanie", "jinsi shim",
+    "ko'ylak ayollar", "erkaklar kurtka", "bolalar kiyim chegirma", "palatka chodir",
+    "kafe jihozlari", "restoran jihozlari", "fastfud uskuna",
 ]
 
 

@@ -15,7 +15,7 @@ from .base import Deal, categorize
 URL = "https://asaxiy.uz/discount/product?page={}"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-PAGES = 10
+PAGES = 30
 
 _CARD = re.compile(r'<div class="product__item[ "].*?(?=<div class="product__item[ "]|</section|</main)', re.S)
 _ACTUAL = re.compile(r'data-actual-price="(\d+)"')
