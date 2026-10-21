@@ -526,25 +526,35 @@ class MapMarker extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: AnimatedScale(
-          scale: selected ? 1.12 : 1,
+          scale: selected ? 1.15 : 1,
           duration: const Duration(milliseconds: 180),
-          child: Container(
-            height: 34, padding: const EdgeInsets.symmetric(horizontal: 5),
-            decoration: BoxDecoration(
-              color: selected ? C.green : C.panel,
-              borderRadius: BorderRadius.circular(17),
-              border: Border.all(color: selected ? C.green : C.borderPanel),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 3))],
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              height: 36, padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: selected ? C.green : C.panel,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: selected ? Colors.white : C.borderPanel, width: selected ? 2 : 1),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 10, offset: const Offset(0, 4))],
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                StoreAvatar(store, size: 26),
+                const SizedBox(width: 4),
+                Text('−$percent%',
+                    style: TextStyle(fontFamily: kFont, fontSize: 14, fontWeight: FontWeight.w800,
+                        color: selected ? C.onAccent : C.red)),
+                const SizedBox(width: 5),
+              ]),
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              StoreAvatar(store, size: 24),
-              const SizedBox(width: 5),
-              Text('−$percent%',
-                  style: TextStyle(fontFamily: kFont, fontSize: 13, fontWeight: FontWeight.w800,
-                      color: selected ? C.onAccent : C.text)),
-              const SizedBox(width: 4),
-            ]),
-          ),
+            // «хвостик» пина
+            Transform.translate(
+              offset: const Offset(0, -3),
+              child: Transform.rotate(angle: 0.785, child: Container(width: 8, height: 8,
+                decoration: BoxDecoration(color: selected ? C.green : C.panel,
+                  border: Border(right: BorderSide(color: selected ? Colors.white : C.borderPanel, width: selected ? 2 : 1),
+                                 bottom: BorderSide(color: selected ? Colors.white : C.borderPanel, width: selected ? 2 : 1))))),
+            ),
+          ]),
         ),
       );
 }

@@ -47,11 +47,21 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void dispose() { mapController.dispose(); super.dispose(); }
 
-  List<Deal> get _withGeo => DealsStore.I.all
-      .where((d) => d.lat != null && d.lon != null && d.hasDiscount)
-      .where((d) => chipCat[chip] == null || d.category == chipCat[chip])
-      .take(80)
-      .toList();
+  /// Метки: прореживаем по сетке (лучшая скидка на район), чтобы не наслаивались.
+  List<Deal> get _withGeo {
+    final raw = DealsStore.I.all
+        .where((d) => d.lat != null && d.lon != null && d.hasDiscount)
+        .where((d) => chipCat[chip] == null || d.category == chipCat[chip]);
+    final grid = <String, Deal>{};
+    for (final d in raw) {
+      final key = '${(d.lat! * 250).round()}_${(d.lon! * 250).round()}'; // ~0.004°
+      final cur = grid[key];
+      if (cur == null || (d.percent ?? 0) > (cur.percent ?? 0)) grid[key] = d;
+    }
+    final list = grid.values.toList()
+      ..sort((a, b) => (a.percent ?? 0).compareTo(b.percent ?? 0)); // крупные % сверху
+    return list.length > 70 ? list.sublist(list.length - 70) : list;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +95,8 @@ class _MapScreenState extends State<MapScreen> {
               for (final d in deals)
                 Marker(
                   point: LatLng(d.lat!, d.lon!),
-                  width: 86, height: 40,
-                  alignment: Alignment.center,
+                  width: 96, height: 50,
+                  alignment: Alignment.bottomCenter,
                   child: MapMarker(
                     store: d.store, percent: d.percent ?? 0, selected: selected?.id == d.id,
                     onTap: () {
@@ -173,7 +183,16 @@ class _MapScreenState extends State<MapScreen> {
               const SizedBox(height: 2),
               Text(d.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: T.productName),
               const SizedBox(height: 6),
-              PriceText(d.newPrice!, size: 16),
+              Row(children: [
+                PriceText(d.newPrice!, size: 16),
+                if (_me != null) ...[
+                  const Spacer(),
+                  const Icon(Icons.near_me_outlined, size: 13, color: C.textDim),
+                  const SizedBox(width: 3),
+                  Text('${const Distance().as(LengthUnit.Kilometer, _me!, LatLng(d.lat!, d.lon!)).toStringAsFixed(1)} км',
+                      style: T.meta),
+                ],
+              ]),
             ])),
             const SizedBox(width: 8),
             Container(width: 48, height: 48,
