@@ -242,8 +242,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ]),
             ]),
           ),
-          IconCircleButton(Symbols.favorite_border,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesScreen()))),
+          Stack(children: [
+            IconCircleButton(Symbols.favorite_border,
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesScreen()))
+                    .then((_) => setState(() {}))),
+            if (DealsStore.I.favIds.isNotEmpty)
+              Positioned(right: 0, top: 0, child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                decoration: BoxDecoration(color: C.green, borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: C.bg, width: 1.5)),
+                child: Text('${DealsStore.I.favIds.length}', textAlign: TextAlign.center,
+                    style: const TextStyle(fontFamily: kFont, fontSize: 10, fontWeight: FontWeight.w800, color: C.onAccent)),
+              )),
+          ]),
           const SizedBox(width: 10),
           Stack(children: [
             IconCircleButton(Symbols.notifications_none, onTap: () {

@@ -434,12 +434,19 @@ class DealCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                PriceText(deal.newPrice!),
-                const SizedBox(height: 2),
-                if (deal.oldPrice != null)
-                  Text('${groupPrice(deal.oldPrice!)} сум', style: T.oldPrice)
+                Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
+                  PriceText(deal.newPrice!),
+                  if (deal.oldPrice != null) ...[
+                    const SizedBox(width: 6),
+                    Flexible(child: Text('${groupPrice(deal.oldPrice!)}', maxLines: 1, overflow: TextOverflow.ellipsis, style: T.oldPrice)),
+                  ],
+                ]),
+                const SizedBox(height: 3),
+                if (deal.savings != null)
+                  Text('выгода ${groupPrice(deal.savings!)}',
+                      style: const TextStyle(fontFamily: kFont, fontSize: 11, fontWeight: FontWeight.w700, color: C.saveText))
                 else
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 14),
                 const SizedBox(height: 6),
                 SizedBox(
                   height: 34,

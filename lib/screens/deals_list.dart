@@ -6,6 +6,8 @@ import '../theme.dart';
 import '../ui_kit.dart';
 import 'deal_detail.dart';
 
+enum _Sort { discount, cheap, expensive }
+
 /// Универсальный экран списка скидок (категория, магазин, событие).
 class DealsListScreen extends StatefulWidget {
   final String title;
@@ -17,9 +19,24 @@ class DealsListScreen extends StatefulWidget {
 }
 
 class _DealsListScreenState extends State<DealsListScreen> {
+  _Sort sort = _Sort.discount;
+
+  List<Deal> get _sorted {
+    final list = [...widget.deals];
+    switch (sort) {
+      case _Sort.discount:
+        list.sort((a, b) => (b.percent ?? 0).compareTo(a.percent ?? 0));
+      case _Sort.cheap:
+        list.sort((a, b) => (a.newPrice ?? 0).compareTo(b.newPrice ?? 0));
+      case _Sort.expensive:
+        list.sort((a, b) => (b.newPrice ?? 0).compareTo(a.newPrice ?? 0));
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final deals = widget.deals;
+    final deals = _sorted;
     return Scaffold(
       backgroundColor: C.bg,
       body: SafeArea(
@@ -35,6 +52,22 @@ class _DealsListScreenState extends State<DealsListScreen> {
               ])),
             ]),
           )),
+          if (deals.isNotEmpty)
+            SliverToBoxAdapter(child: SizedBox(
+              height: 38,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                children: [
+                  _sortChip('По скидке', Symbols.local_fire_department, _Sort.discount),
+                  const SizedBox(width: 8),
+                  _sortChip('Сначала дешевле', Symbols.arrow_downward, _Sort.cheap),
+                  const SizedBox(width: 8),
+                  _sortChip('Сначала дороже', Symbols.arrow_upward, _Sort.expensive),
+                ],
+              ),
+            )),
+          const SliverToBoxAdapter(child: SizedBox(height: 14)),
           if (deals.isEmpty)
             SliverFillRemaining(hasScrollBody: false, child: Center(
               child: Padding(padding: const EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: const [
@@ -56,6 +89,27 @@ class _DealsListScreenState extends State<DealsListScreen> {
                 ), childCount: deals.length),
               ),
             ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _sortChip(String label, IconData icon, _Sort s) {
+    final active = sort == s;
+    return PressScale(
+      onTap: () => setState(() => sort = s),
+      child: Container(
+        height: 38, padding: const EdgeInsets.symmetric(horizontal: 14), alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: active ? C.text : C.card,
+          borderRadius: BorderRadius.circular(19),
+          border: Border.all(color: active ? C.text : C.border),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 15, color: active ? C.onAccent : C.textDim, weight: 600),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(fontFamily: kFont, fontSize: 13, fontWeight: FontWeight.w700,
+              color: active ? C.onAccent : C.textDim)),
         ]),
       ),
     );

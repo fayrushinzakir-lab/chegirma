@@ -16,9 +16,13 @@ class CatalogScreen extends StatelessWidget {
       child: ListenableBuilder(
         listenable: store,
         builder: (context, _) {
+          final loaded = store.all.isNotEmpty;
           final stores = store.topStores(8);
-          final cats = categories.where((c) => c.id != 'other' && store.countIn(c.id) > 0).toList();
-          return CustomScrollView(slivers: [
+          final cats = categories.where((c) => c.id != 'other' && (!loaded || store.countIn(c.id) > 0)).toList();
+          return RefreshIndicator(
+            color: C.green, backgroundColor: C.card,
+            onRefresh: () => store.load(force: true),
+            child: CustomScrollView(physics: const AlwaysScrollableScrollPhysics(), slivers: [
             const SliverToBoxAdapter(child: Padding(
               padding: EdgeInsets.fromLTRB(20, 14, 20, 14), child: Text('Каталог', style: T.screenTitle))),
             SliverPadding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -80,7 +84,7 @@ class CatalogScreen extends StatelessWidget {
               )),
             ],
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
-          ]);
+          ]));
         },
       ),
     );
