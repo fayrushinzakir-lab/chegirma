@@ -41,7 +41,10 @@ QUERIES = [
     "velosiped chegirma", "samokat",
     "mahsulotlar aksiya", "oziq ovqat", "choy qahva",
     "bolalar tovarlari chegirma", "pampers aksiya",
+    "bolalar ovqati", "детское питание", "детская смесь nan", "aptechka",
+    "ko'ylak chegirma", "sumka aksiya", "palto chegirma", "sport kiyim",
     "restoran aksiya", "kafe chegirma", "pizza aksiya", "dostavka ovqat", "banket to'yxona",
+    "mebel divan chegirma", "gaz plita aksiya", "noutbuk aksiya", "monitor chegirma",
 ]
 
 

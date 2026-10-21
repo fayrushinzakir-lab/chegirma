@@ -43,10 +43,18 @@ class _MapScreenState extends State<MapScreen> {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'uz.chegirmalar.chegirma',
-            subdomains: const ['a', 'b', 'c', 'd'],
-            retinaMode: RetinaMode.isHighDensity(context),
+            // Бесплатные светлые тайлы OSM → тёмный фильтр под тему (инверсия яркости).
+            tileBuilder: (context, tileWidget, tile) => ColorFiltered(
+              colorFilter: const ColorFilter.matrix(<double>[
+                -0.2, -0.7, -0.07, 0, 255,
+                -0.2, -0.7, -0.07, 0, 255,
+                -0.2, -0.7, -0.07, 0, 255,
+                0, 0, 0, 1, 0,
+              ]),
+              child: tileWidget,
+            ),
           ),
           MarkerLayer(
             markers: [

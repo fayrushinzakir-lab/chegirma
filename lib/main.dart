@@ -15,7 +15,7 @@ class ChegirmaApp extends StatelessWidget {
   const ChegirmaApp({super.key});
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Chegirma',
+        title: 'chegirmalar.uz',
         debugShowCheckedModeBanner: false,
         theme: buildTheme(),
         home: const Root(),

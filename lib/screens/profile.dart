@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ]),
             ),
             const SizedBox(height: 24),
-            Center(child: Text('Chegirma · v0.2 · прототип',
+            Center(child: Text('chegirmalar.uz · v0.3',
                 style: T.meta.copyWith(fontSize: 11))),
           ],
         ),

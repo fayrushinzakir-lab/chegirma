@@ -151,8 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 4),
               Row(children: const [
                 Text('chegirmalar', style: T.logo),
-                SizedBox(width: 6),
-                Padding(padding: EdgeInsets.only(bottom: 4), child: CircleAvatar(radius: 4, backgroundColor: C.green)),
+                Text('.uz', style: TextStyle(fontFamily: kFont, fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: -0.8, color: C.green)),
               ]),
             ]),
           ),
