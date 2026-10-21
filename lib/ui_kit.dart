@@ -70,10 +70,13 @@ class PrimaryButton extends StatelessWidget {
         onTap: onTap,
         child: Container(
           height: 54, alignment: Alignment.center,
-          decoration: BoxDecoration(color: C.green, borderRadius: BorderRadius.circular(R.button)),
+          decoration: BoxDecoration(
+            color: C.green, borderRadius: BorderRadius.circular(R.button),
+            boxShadow: [BoxShadow(color: C.green.withValues(alpha: 0.28), blurRadius: 18, offset: const Offset(0, 6))],
+          ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            if (icon != null) ...[Icon(icon, color: C.onAccent, size: 20), const SizedBox(width: 8)],
-            Text(label, style: const TextStyle(fontFamily: kFont, color: C.onAccent, fontSize: 16, fontWeight: FontWeight.w800)),
+            if (icon != null) ...[Icon(icon, color: C.onAccent, size: 20, weight: 700, fill: 1), const SizedBox(width: 8)],
+            Text(label, style: const TextStyle(fontFamily: kFont, color: C.onAccent, fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: 0.2)),
           ]),
         ),
       );
@@ -89,9 +92,10 @@ class SecondaryButton extends StatelessWidget {
         onTap: onTap,
         child: Container(
           height: 54, alignment: Alignment.center,
-          decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(R.button)),
+          decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(R.button),
+              border: Border.all(color: C.borderPanel)),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            if (icon != null) ...[Icon(icon, color: C.text, size: 20), const SizedBox(width: 8)],
+            if (icon != null) ...[Icon(icon, color: C.text, size: 20, weight: 600), const SizedBox(width: 8)],
             Text(label, style: const TextStyle(fontFamily: kFont, color: C.text, fontSize: 16, fontWeight: FontWeight.w700)),
           ]),
         ),
@@ -128,13 +132,16 @@ class SearchBarField extends StatelessWidget {
           child: PressScale(
             onTap: onTap,
             child: Container(
-              height: 52, padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 54, padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.search),
                   border: Border.all(color: C.border)),
               child: Row(children: [
-                const Icon(Symbols.search, color: C.textDim, size: 22),
+                Container(width: 30, height: 30, alignment: Alignment.center,
+                  decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(9)),
+                  child: const Icon(Symbols.search, color: C.text, size: 18, weight: 600)),
                 const SizedBox(width: 10),
-                Text(hint, style: const TextStyle(fontFamily: kFont, color: C.textDim, fontSize: 15)),
+                Expanded(child: Text(hint, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontFamily: kFont, color: C.textDim, fontSize: 15))),
               ]),
             ),
           ),
@@ -144,9 +151,9 @@ class SearchBarField extends StatelessWidget {
           PressScale(
             onTap: onTap,
             child: Container(
-              width: 52, height: 52,
-              decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(R.search)),
-              child: const Icon(Symbols.tune, color: C.text, size: 22),
+              width: 54, height: 54,
+              decoration: BoxDecoration(color: C.green, borderRadius: BorderRadius.circular(R.search)),
+              child: const Icon(Symbols.tune, color: C.onAccent, size: 22, weight: 600),
             ),
           ),
         ],

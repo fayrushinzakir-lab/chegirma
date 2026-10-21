@@ -84,6 +84,8 @@ ThemeData buildTheme() {
       secondary: C.yellow, onPrimary: C.onAccent),
     splashColor: Colors.white10,
     highlightColor: Colors.transparent,
+    // Единый вес линейных иконок (Material Symbols) — чуть крепче, премиальнее.
+    iconTheme: const IconThemeData(weight: 500, grade: 0, opticalSize: 24, color: C.text),
     textTheme: base.textTheme.apply(fontFamily: kFont, bodyColor: C.text, displayColor: C.text),
   );
 }

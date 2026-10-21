@@ -97,15 +97,21 @@ class _HomeShellState extends State<HomeShell> {
         ),
         child: Row(children: List.generate(tabs.length, (i) {
           final active = index == i;
-          final (ic, icA, label) = tabs[i];
+          final (ic, _, label) = tabs[i];
           return Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => setState(() => index = i),
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(active ? icA : ic, size: 24, color: active ? C.green : C.textDim),
+                AnimatedScale(
+                  scale: active ? 1.0 : 0.92,
+                  duration: const Duration(milliseconds: 180),
+                  child: Icon(ic, size: 25, color: active ? C.green : C.textDim,
+                      fill: active ? 1 : 0, weight: active ? 600 : 500),
+                ),
                 const SizedBox(height: 4),
-                Text(label, style: T.navLabel.copyWith(color: active ? C.green : C.textDim)),
+                Text(label, style: T.navLabel.copyWith(color: active ? C.green : C.textDim,
+                    fontWeight: active ? FontWeight.w700 : FontWeight.w600)),
               ]),
             ),
           );

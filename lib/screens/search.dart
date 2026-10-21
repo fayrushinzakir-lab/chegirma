@@ -51,10 +51,12 @@ class _SearchScreenState extends State<SearchScreen> {
               IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop()),
               const SizedBox(width: 10),
               Expanded(child: Container(
-                height: 50, padding: const EdgeInsets.symmetric(horizontal: 14),
+                height: 54, padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.search), border: Border.all(color: C.border)),
                 child: Row(children: [
-                  const Icon(Symbols.search, color: C.textDim, size: 22),
+                  Container(width: 30, height: 30, alignment: Alignment.center,
+                    decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(9)),
+                    child: const Icon(Symbols.search, color: C.text, size: 18, weight: 600)),
                   const SizedBox(width: 10),
                   Expanded(child: TextField(
                     controller: ctrl, autofocus: true,
@@ -87,9 +89,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ],
             )),
-            const SizedBox(height: 10),
+            if (res.isNotEmpty)
+              Padding(padding: const EdgeInsets.fromLTRB(20, 12, 20, 6),
+                child: Align(alignment: Alignment.centerLeft,
+                  child: Text('Найдено ${res.length}', style: T.meta.copyWith(fontWeight: FontWeight.w700)))),
+            const SizedBox(height: 4),
             Expanded(child: res.isEmpty
-                ? Center(child: Text('Ничего не найдено по «$q»', style: T.meta))
+                ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Symbols.search_off, size: 40, color: C.textDim),
+                    const SizedBox(height: 12),
+                    Text('Ничего не найдено по «$q»', style: T.meta),
+                  ]))
                 : GridView.builder(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
