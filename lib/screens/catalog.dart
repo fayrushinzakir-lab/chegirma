@@ -4,6 +4,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
 import 'deals_list.dart';
+import 'search.dart';
 
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({super.key});
@@ -21,7 +22,8 @@ class CatalogScreen extends StatelessWidget {
             const SliverToBoxAdapter(child: Padding(
               padding: EdgeInsets.fromLTRB(20, 14, 20, 14), child: Text('Каталог', style: T.screenTitle))),
             SliverPadding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              sliver: SliverToBoxAdapter(child: SearchBarField(onTap: () {}))),
+              sliver: SliverToBoxAdapter(child: SearchBarField(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen()))))),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
               sliver: SliverGrid(

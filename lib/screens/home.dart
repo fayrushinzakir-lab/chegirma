@@ -8,6 +8,7 @@ import 'deal_detail.dart';
 import 'deals_list.dart';
 import 'favorites.dart';
 import 'profile.dart';
+import 'search.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,9 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 SliverToBoxAdapter(child: _header()),
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
-                  sliver: SliverToBoxAdapter(child: SearchBarField(onTap: () {})),
+                  sliver: SliverToBoxAdapter(child: SearchBarField(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen())))),
                 ),
-                const SliverToBoxAdapter(child: _HotBanner()),
+                SliverToBoxAdapter(child: _HotBanner(onOpenDeal: _open)),
                 SliverToBoxAdapter(child: _eventsSection()),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -141,15 +143,63 @@ class _HomeScreenState extends State<HomeScreen> {
         ]),
       );
 
+  void _showCitySheet() {
+    final store = DealsStore.I;
+    final cities = store.cities;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: C.panel,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(R.sheet))),
+      builder: (_) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(height: 12),
+          Container(width: 40, height: 4, decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(2))),
+          const Padding(padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+            child: Align(alignment: Alignment.centerLeft, child: Text('Выберите город', style: T.section))),
+          Flexible(child: ListView(shrinkWrap: true, children: [
+            _cityTile('Все города Узбекистана', null, store),
+            for (final c in cities) _cityTile(c, c, store),
+          ])),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
+
+  Widget _cityTile(String label, String? value, DealsStore store) {
+    final active = store.selectedCity == value;
+    return ListTile(
+      onTap: () { store.setCity(value); Navigator.pop(context); setState(() {}); },
+      leading: Icon(active ? Icons.radio_button_checked : Icons.radio_button_off,
+          color: active ? C.green : C.textDim, size: 22),
+      title: Text(label, style: TextStyle(fontFamily: kFont, fontSize: 15,
+          fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? C.text : C.textDim)),
+      trailing: value == null ? null : Text('${store.all.where((d) => d.city == value).length}', style: T.meta),
+    );
+  }
+
+  List<Deal> _eventDeals(PromoEvent e) {
+    final store = DealsStore.I;
+    return e.categoryFilter != null
+        ? store.byCategory(e.categoryFilter)
+        : store.byCategory(null).where((d) => (d.percent ?? 0) >= 20).toList();
+  }
+
   Widget _eventsSection() {
     final events = [...promoEvents]..sort((a, b) => a.daysUntil.compareTo(b.daysUntil));
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Padding(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
-        child: Text('События и акции', style: T.section),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
+        child: Row(children: const [
+          Text('События и акции', style: T.section),
+          SizedBox(width: 8),
+          Icon(Icons.auto_awesome, size: 16, color: C.yellow),
+        ]),
       ),
+      Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+        child: Text('Готовьтесь к распродажам заранее', style: T.meta)),
       SizedBox(
-        height: 118,
+        height: 150,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -157,11 +207,8 @@ class _HomeScreenState extends State<HomeScreen> {
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (_, i) {
             final e = events[i];
-            return EventCard(event: e, onTap: () {
-              final store = DealsStore.I;
-              final deals = e.categoryFilter != null
-                  ? store.byCategory(e.categoryFilter)
-                  : store.byCategory(null).where((d) => (d.percent ?? 0) >= 20).toList();
+            final deals = _eventDeals(e);
+            return EventCard(event: e, dealsCount: deals.length, onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => DealsListScreen(
                 title: e.title, subtitle: '${e.whenText} · ${deals.length} скидок', deals: deals)));
             });
@@ -178,12 +225,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               PressScale(
-                onTap: () {},
-                child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                  Icon(Icons.place_outlined, size: 15, color: C.textDim),
-                  SizedBox(width: 4),
-                  Text('Ташкент, Юнусабад', style: TextStyle(fontFamily: kFont, fontSize: 13, color: C.textDim, fontWeight: FontWeight.w600)),
-                  Icon(Icons.keyboard_arrow_down, size: 16, color: C.textDim),
+                onTap: _showCitySheet,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.place_outlined, size: 15, color: C.textDim),
+                  const SizedBox(width: 4),
+                  Text(DealsStore.I.selectedCity ?? 'Все города Узбекистана',
+                      style: const TextStyle(fontFamily: kFont, fontSize: 13, color: C.textDim, fontWeight: FontWeight.w600)),
+                  const Icon(Icons.keyboard_arrow_down, size: 16, color: C.textDim),
                 ]),
               ),
               const SizedBox(height: 4),
@@ -231,7 +279,8 @@ class _CardSkeleton extends StatelessWidget {
 }
 
 class _HotBanner extends StatefulWidget {
-  const _HotBanner();
+  final void Function(Deal) onOpenDeal;
+  const _HotBanner({required this.onOpenDeal});
   @override
   State<_HotBanner> createState() => _HotBannerState();
 }
@@ -241,7 +290,6 @@ class _HotBannerState extends State<_HotBanner> {
   int page = 0;
   Duration left = const Duration(hours: 5, minutes: 23, seconds: 10);
   Timer? tick, auto;
-  static const slides = [('Горящие скидки дня', 50), ('Техника недели', 35), ('Стройка со скидкой', 40)];
 
   @override
   void initState() {
@@ -252,7 +300,8 @@ class _HotBannerState extends State<_HotBanner> {
     });
     auto = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted || !controller.hasClients) return;
-      controller.animateToPage((page + 1) % slides.length, duration: const Duration(milliseconds: 400), curve: Curves.easeOutCubic);
+      final count = DealsStore.I.topDeals(4).length + 1;
+      controller.animateToPage((page + 1) % count, duration: const Duration(milliseconds: 450), curve: Curves.easeOutCubic);
     });
   }
 
@@ -262,50 +311,86 @@ class _HotBannerState extends State<_HotBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final h = two(left.inHours), m = two(left.inMinutes % 60), s = two(left.inSeconds % 60);
+    final deals = DealsStore.I.topDeals(4);
+    final count = deals.length + 1; // 0 — брендовый слайд
     return Column(children: [
       SizedBox(
-        height: 150,
+        height: 160,
         child: PageView.builder(
           controller: controller,
           onPageChanged: (i) => setState(() => page = i),
-          itemCount: slides.length,
-          itemBuilder: (_, i) {
-            final (title, pct) = slides[i];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(R.banner),
-                child: Container(
-                  color: C.yellow,
-                  child: Stack(children: [
-                    Positioned(right: -30, bottom: -40, child: Container(width: 150, height: 150,
-                      decoration: const BoxDecoration(color: C.yellowDeco, shape: BoxShape.circle))),
-                    Positioned(right: 18, top: 0, bottom: 0, child: Center(child: Text('−$pct%',
-                      style: const TextStyle(fontFamily: kFont, fontSize: 64, fontWeight: FontWeight.w800, letterSpacing: -3, color: C.onAccent)))),
-                    if (i == 0) Positioned(left: 16, top: 16, child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(color: C.onAccent, borderRadius: BorderRadius.circular(20)),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.schedule, size: 13, color: C.yellow),
-                        const SizedBox(width: 5),
-                        Text('$h:$m:$s', style: const TextStyle(fontFamily: kFont, color: C.text, fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1)),
-                      ]))),
-                    Positioned(left: 16, bottom: 16, right: 110, child: Text(title,
-                      style: const TextStyle(fontFamily: kFont, color: C.onAccent, fontSize: 18, fontWeight: FontWeight.w800, height: 1.1))),
-                    Positioned(right: 16, bottom: 16, child: Container(width: 44, height: 44,
-                      decoration: const BoxDecoration(color: C.onAccent, shape: BoxShape.circle),
-                      child: const Icon(Icons.arrow_forward, color: C.yellow, size: 22))),
-                  ]),
-                ),
-              ),
-            );
-          },
+          itemCount: count,
+          itemBuilder: (_, i) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: i == 0 ? _brandedSlide() : _dealSlide(deals[i - 1]),
+          ),
         ),
       ),
       const SizedBox(height: 12),
-      CarouselDots(count: slides.length, active: page),
+      CarouselDots(count: count, active: page),
       const SizedBox(height: 20),
     ]);
+  }
+
+  Widget _brandedSlide() {
+    final h = two(left.inHours), m = two(left.inMinutes % 60), s = two(left.inSeconds % 60);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(R.banner),
+      child: Container(
+        color: C.yellow,
+        child: Stack(children: [
+          Positioned(right: -30, bottom: -40, child: Container(width: 160, height: 160,
+            decoration: const BoxDecoration(color: C.yellowDeco, shape: BoxShape.circle))),
+          const Positioned(right: 20, top: 0, bottom: 0, child: Center(child: Text('−50%',
+            style: TextStyle(fontFamily: kFont, fontSize: 64, fontWeight: FontWeight.w800, letterSpacing: -3, color: C.onAccent)))),
+          Positioned(left: 16, top: 16, child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(color: C.onAccent, borderRadius: BorderRadius.circular(20)),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.local_fire_department, size: 13, color: C.yellow),
+              const SizedBox(width: 5),
+              Text('$h:$m:$s', style: const TextStyle(fontFamily: kFont, color: C.text, fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1)),
+            ]))),
+          const Positioned(left: 16, bottom: 16, right: 110, child: Text('Горящие скидки дня',
+            style: TextStyle(fontFamily: kFont, color: C.onAccent, fontSize: 18, fontWeight: FontWeight.w800, height: 1.1))),
+        ]),
+      ),
+    );
+  }
+
+  Widget _dealSlide(Deal d) {
+    return GestureDetector(
+      onTap: () => widget.onOpenDeal(d),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(R.banner),
+        child: Stack(fit: StackFit.expand, children: [
+          ImagePlate(deal: d, height: 160, radius: 0),
+          // затемнение для читаемости
+          Container(decoration: BoxDecoration(gradient: LinearGradient(
+            begin: Alignment.centerRight, end: Alignment.centerLeft,
+            colors: [Colors.black.withValues(alpha: 0.2), Colors.black.withValues(alpha: 0.82)]))),
+          Positioned(left: 16, top: 16, child: DiscountBadge(d.percent ?? 0, fontSize: 18)),
+          Positioned(left: 16, right: 16, bottom: 14, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              StoreAvatar(d.store, size: 20),
+              const SizedBox(width: 6),
+              Text(d.store, style: const TextStyle(fontFamily: kFont, color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w700)),
+            ]),
+            const SizedBox(height: 6),
+            Text(d.title, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontFamily: kFont, color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800, height: 1.1)),
+            const SizedBox(height: 4),
+            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Text('${groupPrice(d.newPrice!)} сум', style: const TextStyle(fontFamily: kFont, color: C.green, fontSize: 19, fontWeight: FontWeight.w800)),
+              if (d.oldPrice != null) ...[
+                const SizedBox(width: 8),
+                Padding(padding: const EdgeInsets.only(bottom: 2), child: Text('${groupPrice(d.oldPrice!)}',
+                  style: const TextStyle(fontFamily: kFont, color: Colors.white54, fontSize: 13, decoration: TextDecoration.lineThrough))),
+              ],
+            ]),
+          ])),
+        ]),
+      ),
+    );
   }
 }

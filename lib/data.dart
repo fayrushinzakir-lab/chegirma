@@ -40,10 +40,49 @@ class DealsStore extends ChangeNotifier {
 
   List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
 
+  // Выбранный город (null = все города).
+  String? selectedCity;
+
+  void setCity(String? city) {
+    selectedCity = city;
+    notifyListeners();
+  }
+
+  /// Города из данных, по количеству скидок.
+  List<String> get cities {
+    final m = <String, int>{};
+    for (final d in all) {
+      if (d.city.isNotEmpty) m[d.city] = (m[d.city] ?? 0) + 1;
+    }
+    final e = m.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    return e.map((x) => x.key).toList();
+  }
+
   List<Deal> byCategory(String? cat) {
-    final list = cat == null ? [...all] : all.where((d) => d.category == cat).toList();
+    var list = all.where((d) {
+      if (cat != null && d.category != cat) return false;
+      if (selectedCity != null && d.city != selectedCity) return false;
+      return true;
+    }).toList();
     list.sort((a, b) => (b.percent ?? 0).compareTo(a.percent ?? 0));
     return list;
+  }
+
+  /// Поиск по названию/магазину.
+  List<Deal> search(String q) {
+    final s = q.trim().toLowerCase();
+    if (s.isEmpty) return [];
+    final list = all.where((d) =>
+        d.title.toLowerCase().contains(s) || d.store.toLowerCase().contains(s)).toList();
+    list.sort((a, b) => (b.percent ?? 0).compareTo(a.percent ?? 0));
+    return list;
+  }
+
+  /// Топ скидок с фото (для баннера).
+  List<Deal> topDeals(int n) {
+    final list = all.where((d) => d.hasDiscount && d.imageUrl.isNotEmpty).toList()
+      ..sort((a, b) => (b.percent ?? 0).compareTo(a.percent ?? 0));
+    return list.take(n).toList();
   }
 
   /// Магазины по количеству скидок.

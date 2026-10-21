@@ -141,7 +141,7 @@ class SearchBarField extends StatelessWidget {
         if (showFilter) ...[
           const SizedBox(width: 10),
           PressScale(
-            onTap: () {},
+            onTap: onTap,
             child: Container(
               width: 52, height: 52,
               decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(R.search)),
@@ -460,40 +460,55 @@ class DealCard extends StatelessWidget {
 /// Карточка событийной акции (Чёрная пятница, 8 Марта…).
 class EventCard extends StatelessWidget {
   final PromoEvent event;
+  final int dealsCount;
   final VoidCallback onTap;
-  const EventCard({super.key, required this.event, required this.onTap});
+  const EventCard({super.key, required this.event, required this.onTap, this.dealsCount = 0});
   @override
   Widget build(BuildContext context) {
+    final c = event.color;
     return PressScale(
       onTap: onTap,
       child: Container(
-        width: 250,
+        width: 280, height: 150,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: C.card,
           borderRadius: BorderRadius.circular(R.card),
-          border: Border.all(color: C.border),
+          border: Border.all(color: c.withValues(alpha: 0.35)),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [c.withValues(alpha: 0.14), C.card, C.card]),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Container(
-              width: 40, height: 40,
-              decoration: BoxDecoration(color: event.color.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(12)),
-              child: Icon(event.icon, color: event.color, size: 22),
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(color: event.color.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(20)),
-              child: Text(event.whenText, style: TextStyle(fontFamily: kFont, fontSize: 12, fontWeight: FontWeight.w800, color: event.color)),
-            ),
+        child: Stack(children: [
+          Positioned(right: -24, top: -24, child: Container(width: 90, height: 90,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: c.withValues(alpha: 0.10)))),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Container(width: 42, height: 42,
+                decoration: BoxDecoration(color: c.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(12)),
+                child: Icon(event.icon, color: c, size: 24)),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(color: c.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(20)),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.schedule, size: 12, color: c),
+                  const SizedBox(width: 4),
+                  Text(event.whenText, style: TextStyle(fontFamily: kFont, fontSize: 12, fontWeight: FontWeight.w800, color: c)),
+                ]),
+              ),
+            ]),
+            const SizedBox(height: 12),
+            Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontFamily: kFont, fontSize: 17, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
+            const SizedBox(height: 3),
+            Expanded(child: Text(event.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: T.meta.copyWith(height: 1.3))),
+            Row(children: [
+              Text(dealsCount > 0 ? 'Смотреть $dealsCount скидок' : 'Смотреть скидки',
+                  style: TextStyle(fontFamily: kFont, fontSize: 13, fontWeight: FontWeight.w800, color: c)),
+              const SizedBox(width: 4),
+              Icon(Icons.arrow_forward, size: 15, color: c),
+            ]),
           ]),
-          const SizedBox(height: 12),
-          Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontFamily: kFont, fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
-          const SizedBox(height: 4),
-          Text(event.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis,
-              style: T.meta.copyWith(height: 1.3)),
         ]),
       ),
     );
