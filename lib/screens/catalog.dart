@@ -17,7 +17,7 @@ class CatalogScreen extends StatelessWidget {
         listenable: store,
         builder: (context, _) {
           final stores = store.topStores(8);
-          final cats = categories.where((c) => c.id != 'other').toList();
+          final cats = categories.where((c) => c.id != 'other' && store.countIn(c.id) > 0).toList();
           return CustomScrollView(slivers: [
             const SliverToBoxAdapter(child: Padding(
               padding: EdgeInsets.fromLTRB(20, 14, 20, 14), child: Text('Каталог', style: T.screenTitle))),

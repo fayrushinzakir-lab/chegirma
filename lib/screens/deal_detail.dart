@@ -124,6 +124,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                       ],
                       _infoRow(Icons.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
                     ])),
+                    ..._similar(d),
                   ],
                 ),
               ),
@@ -154,6 +155,26 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
     );
   }
 
+  List<Widget> _similar(Deal d) {
+    final list = DealsStore.I.byCategory(d.category).where((x) => x.id != d.id).take(10).toList();
+    if (list.isEmpty) return const [];
+    return [
+      const SizedBox(height: 24),
+      const Text('Похожие скидки', style: T.section),
+      const SizedBox(height: 12),
+      SizedBox(
+        height: 180,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: list.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          itemBuilder: (_, i) => _SimilarCard(deal: list[i]),
+        ),
+      ),
+      const SizedBox(height: 8),
+    ];
+  }
+
   Widget _block({required Widget child}) => Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.card), border: Border.all(color: C.border)),
@@ -168,4 +189,30 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         Expanded(child: Text(value, textAlign: TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontFamily: kFont, fontSize: 13, fontWeight: FontWeight.w600, color: C.text))),
       ]);
+}
+
+/// Компактная карточка для раздела «Похожие скидки».
+class _SimilarCard extends StatelessWidget {
+  final Deal deal;
+  const _SimilarCard({required this.deal});
+  @override
+  Widget build(BuildContext context) {
+    return PressScale(
+      onTap: () => Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => DealDetailScreen(deal: deal))),
+      child: SizedBox(
+        width: 130,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Stack(children: [
+            ImagePlate(deal: deal, height: 110, radius: 14),
+            if (deal.percent != null) Positioned(left: 6, top: 6, child: DiscountBadge(deal.percent!, fontSize: 11)),
+          ]),
+          const SizedBox(height: 8),
+          PriceText(deal.newPrice!, size: 15),
+          const SizedBox(height: 2),
+          Text(deal.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: T.meta.copyWith(color: C.text, height: 1.2)),
+        ]),
+      ),
+    );
+  }
 }

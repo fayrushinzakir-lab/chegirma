@@ -345,7 +345,13 @@ class _HotBannerState extends State<_HotBanner> {
 
   Widget _brandedSlide() {
     final h = two(left.inHours), m = two(left.inMinutes % 60), s = two(left.inSeconds % 60);
-    return ClipRRect(
+    return GestureDetector(
+      onTap: () {
+        final hot = DealsStore.I.byCategory(null).where((d) => (d.percent ?? 0) >= 30).toList();
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
+            DealsListScreen(title: 'Горящие скидки дня', subtitle: '${hot.length} выгодных предложений', deals: hot)));
+      },
+      child: ClipRRect(
       borderRadius: BorderRadius.circular(R.banner),
       child: Container(
         color: C.yellow,
@@ -366,6 +372,7 @@ class _HotBannerState extends State<_HotBanner> {
             style: TextStyle(fontFamily: kFont, color: C.onAccent, fontSize: 18, fontWeight: FontWeight.w800, height: 1.1))),
         ]),
       ),
+    ),
     );
   }
 
