@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(adb devices *)",
+      "Read(//Users/zakir.fayrushin/development/flutter/bin/**)",
+      "Read(//Users/zakir.fayrushin/Library/Android/sdk/platform-tools/**)",
+      "Bash(~/development/flutter/bin/flutter --version)",
+      "Bash(~/flutter/bin/flutter --version)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb devices *)",
+      "WebSearch",
+      "WebFetch(domain:texnomart.uz)",
+      "WebFetch(domain:api.uzum.uz)",
+      "Bash(curl -s -m 20 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 Chrome/124 Safari/537.36' https://texnomart.uz/)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -m 15 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 Chrome/124 Safari/537.36' 'https://www.olx.uz/api/v1/offers/?limit=1&query=chegirma&category_id=0')",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('/tmp/olx.json'\\)\\);print\\(list\\(d.keys\\(\\)\\)\\);o=d['data'][0];print\\('OFFER KEYS:',list\\(o.keys\\(\\)\\)\\)\")",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('/tmp/olx.json'\\)\\);o=d['data'][0];print\\(json.dumps\\(o.get\\('params'\\),ensure_ascii=False,indent=1\\)[:800]\\)\")",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('/tmp/olx.json'\\)\\);o=d['data'][0];print\\('LOC:',json.dumps\\(o.get\\('location'\\),ensure_ascii=False\\)[:300]\\);print\\('PHOTOS:',json.dumps\\(o.get\\('photos'\\),ensure_ascii=False\\)[:200]\\)\")",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(python3 parser/run.py)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('docs/deals.json'\\)\\);print\\('count:',d['count']\\);[print\\(f\\\\\"  {x['discountPercent']}% | {x['newPrice']} {x['currency']} | {x['title'][:45]} | {x['city']}\\\\\"\\) for x in d['deals'][:8]]\")",
+      "Bash(python3 -c \"import certifi; print\\('certifi:', certifi.where\\(\\)\\)\")",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
