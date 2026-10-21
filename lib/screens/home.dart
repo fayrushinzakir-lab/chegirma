@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListenableBuilder(
         listenable: store,
         builder: (context, _) {
-          final deals = store.byCategory(chipCat[chip]);
+          final deals = store.feed(chipCat[chip]);
           return RefreshIndicator(
             color: C.green, backgroundColor: C.card,
             onRefresh: () => store.load(force: true),

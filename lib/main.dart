@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'auth.dart';
+import 'data.dart';
+import 'persist.dart';
 import 'theme.dart';
 import 'screens/home.dart';
 import 'screens/catalog.dart';
@@ -6,7 +9,11 @@ import 'screens/map.dart';
 import 'screens/shopping_list.dart';
 import 'screens/onboarding.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Persist.init();
+  DealsStore.I.restore();
+  AppAuth.I.restore();
   applySystemChrome();
   runApp(const ChegirmaApp());
 }
@@ -28,19 +35,16 @@ class Root extends StatefulWidget {
   State<Root> createState() => _RootState();
 }
 
-/// Онбординг показывается один раз за запуск приложения (в рамках сессии).
-bool _seenOnboarding = false;
-
 class _RootState extends State<Root> {
-  bool onboarded = _seenOnboarding;
+  bool onboarded = Persist.get<bool>('onboarded') ?? false;
 
   @override
   Widget build(BuildContext context) => onboarded
       ? const HomeShell()
-      : OnboardingScreen(onDone: () => setState(() {
-            onboarded = true;
-            _seenOnboarding = true;
-          }));
+      : OnboardingScreen(onDone: () {
+          Persist.set('onboarded', true);
+          setState(() => onboarded = true);
+        });
 }
 
 class HomeShell extends StatefulWidget {

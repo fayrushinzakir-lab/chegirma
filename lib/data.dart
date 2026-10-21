@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'models.dart';
+import 'persist.dart';
 
 /// Источник реальных данных: публикуется GitHub Actions / парсером в репозиторий.
 const kDealsUrl =
@@ -23,10 +24,17 @@ class DealsStore extends ChangeNotifier {
   String? error;
   DateTime? generatedAt;
 
-  // ───────── Избранное (в рамках сессии) ─────────
+  // ───────── Избранное (сохраняется) ─────────
   final Set<String> favIds = {};
 
   Future<void> loadFavs() async {}
+
+  /// Восстановление из хранилища (вызывается в main до runApp).
+  void restore() {
+    favIds.addAll(Persist.getList('favIds'));
+    final w = Persist.getList('watchlist');
+    if (w.isNotEmpty) { watchlist..clear()..addAll(w); }
+  }
 
   void toggleFav(Deal d) {
     d.favorite = !d.favorite;
@@ -35,23 +43,26 @@ class DealsStore extends ChangeNotifier {
     } else {
       favIds.remove(d.id);
     }
+    Persist.set('favIds', favIds.toList());
     notifyListeners();
   }
 
   List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
 
-  // ───────── Список покупок (отслеживание товаров) ─────────
+  // ───────── Список покупок (сохраняется) ─────────
   final List<String> watchlist = ['Кофе Jacobs', 'Подгузники Huggies', 'Шуруповёрт'];
 
   void addWatch(String q) {
     final s = q.trim();
     if (s.isEmpty || watchlist.any((w) => w.toLowerCase() == s.toLowerCase())) return;
     watchlist.insert(0, s);
+    Persist.set('watchlist', watchlist);
     notifyListeners();
   }
 
   void removeWatch(String q) {
     watchlist.remove(q);
+    Persist.set('watchlist', watchlist);
     notifyListeners();
   }
 
@@ -102,6 +113,10 @@ class DealsStore extends ChangeNotifier {
     list.sort((a, b) => quality(b).compareTo(quality(a)));
     return list;
   }
+
+  /// Лента для главной — без явного мусора («Разное» без скидки).
+  List<Deal> feed(String? cat) =>
+      byCategory(cat).where((d) => !(d.category == 'other' && d.percent == null)).toList();
 
   /// Поиск по названию/магазину.
   List<Deal> search(String q) {

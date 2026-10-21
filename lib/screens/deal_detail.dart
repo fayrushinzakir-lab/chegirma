@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data.dart';
 import '../models.dart';
@@ -22,6 +23,14 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
   Future<void> _call() async {
     if (widget.deal.phone.isEmpty) return;
     await launchUrl(Uri.parse('tel:${widget.deal.phone}'));
+  }
+
+  Future<void> _share() async {
+    final d = widget.deal;
+    final pct = d.percent != null ? ' −${d.percent}%' : '';
+    final text = '🔥$pct ${d.title}\n${groupPrice(d.newPrice!)} сум · ${d.store}'
+        '${d.url.isNotEmpty ? '\n${d.url}' : ''}\n\nНайдено в chegirmalar.uz';
+    await Share.share(text);
   }
 
   @override
@@ -49,7 +58,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
             child: Row(children: [
               IconCircleButton(Icons.arrow_back, bg: C.bg.withValues(alpha: 0.6), onTap: () => Navigator.of(context).pop()),
               const Spacer(),
-              IconCircleButton(Icons.ios_share, bg: C.bg.withValues(alpha: 0.6), onTap: _openSource),
+              IconCircleButton(Icons.ios_share, bg: C.bg.withValues(alpha: 0.6), onTap: _share),
               const SizedBox(width: 10),
               Container(decoration: BoxDecoration(color: C.bg.withValues(alpha: 0.6), shape: BoxShape.circle),
                 child: HeartButton(value: d.favorite, size: 44, onChanged: (_) => setState(() => DealsStore.I.toggleFav(d)))),

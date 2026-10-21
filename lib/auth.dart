@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'persist.dart';
 
 /// Вход через Telegram-бота. URL бэкенда (Deno Deploy) задаётся после деплоя.
 /// Можно переопределить при сборке: --dart-define=AUTH_URL=https://...
@@ -15,6 +16,12 @@ class AppAuth extends ChangeNotifier {
   String? name;
   bool get isLoggedIn => token != null;
   bool get configured => kAuthBaseUrl.isNotEmpty;
+
+  void restore() {
+    token = Persist.get<String>('authToken');
+    phone = Persist.get<String>('authPhone');
+    name = Persist.get<String>('authName');
+  }
 
   /// Старт входа → (nonce, ссылка на бота).
   Future<({String nonce, String botUrl})?> start() async {
@@ -38,6 +45,9 @@ class AppAuth extends ChangeNotifier {
         token = d['token'] as String?;
         phone = d['phone'] as String?;
         name = d['name'] as String?;
+        Persist.set('authToken', token);
+        Persist.set('authPhone', phone);
+        Persist.set('authName', name);
         notifyListeners();
         return true;
       }
@@ -47,6 +57,9 @@ class AppAuth extends ChangeNotifier {
 
   void logout() {
     token = null; phone = null; name = null;
+    Persist.set('authToken', null);
+    Persist.set('authPhone', null);
+    Persist.set('authName', null);
     notifyListeners();
   }
 }
