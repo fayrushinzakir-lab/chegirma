@@ -6,6 +6,7 @@ import '../theme.dart';
 import '../ui_kit.dart';
 import 'deal_detail.dart';
 import 'deals_list.dart';
+import 'favorites.dart';
 import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    DealsStore.I.load();
+    DealsStore.I.load().then((_) => DealsStore.I.loadFavs());
+    DealsStore.I.loadFavs();
   }
 
   void _open(Deal d) => Navigator.of(context).push(PageRouteBuilder(
@@ -81,8 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(store.loading && store.all.isEmpty ? 'загружаем скидки…' : updatedAgo(store.generatedAt),
                             style: T.meta),
                       ]),
-                      Padding(padding: const EdgeInsets.only(top: 4),
-                        child: Text('Все', style: T.section.copyWith(color: C.green, fontSize: 14))),
+                      PressScale(
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
+                            DealsListScreen(title: 'Все скидки', deals: store.byCategory(chipCat[chip])))),
+                        child: Padding(padding: const EdgeInsets.only(top: 4),
+                          child: Text('Все', style: T.section.copyWith(color: C.green, fontSize: 14)))),
                     ],
                   ),
                 )),
@@ -100,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         (_, i) => DealCard(
                           deal: deals[i],
                           onTap: () => _open(deals[i]),
-                          onFav: () => setState(() => deals[i].favorite = !deals[i].favorite),
+                          onFav: () => store.toggleFav(deals[i]),
                         ),
                         childCount: deals.length,
                       ),
@@ -188,6 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ]),
             ]),
           ),
+          IconCircleButton(Icons.favorite_border,
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesScreen()))),
+          const SizedBox(width: 10),
           Stack(children: [
             const IconCircleButton(Icons.notifications_none_rounded),
             Positioned(right: 11, top: 11, child: Container(width: 8, height: 8,

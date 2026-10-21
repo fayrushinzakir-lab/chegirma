@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 
 /// Источник реальных данных: публикуется GitHub Actions / парсером в репозиторий.
@@ -23,6 +23,39 @@ class DealsStore extends ChangeNotifier {
   bool loading = false;
   String? error;
   DateTime? generatedAt;
+
+  // ───────── Избранное (сохраняется на устройстве) ─────────
+  final Set<String> favIds = {};
+  bool _favLoaded = false;
+
+  Future<void> loadFavs() async {
+    if (_favLoaded) return;
+    _favLoaded = true;
+    try {
+      final sp = await SharedPreferences.getInstance();
+      favIds.addAll(sp.getStringList('favIds') ?? const []);
+      for (final d in all) {
+        d.favorite = favIds.contains(d.id);
+      }
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> toggleFav(Deal d) async {
+    d.favorite = !d.favorite;
+    if (d.favorite) {
+      favIds.add(d.id);
+    } else {
+      favIds.remove(d.id);
+    }
+    notifyListeners();
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setStringList('favIds', favIds.toList());
+    } catch (_) {}
+  }
+
+  List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
 
   List<Deal> byCategory(String? cat) {
     final list = cat == null ? [...all] : all.where((d) => d.category == cat).toList();
@@ -56,6 +89,9 @@ class DealsStore extends ChangeNotifier {
           .map((e) => Deal.fromJson(e as Map<String, dynamic>))
           .where((d) => d.newPrice != null && d.title.isNotEmpty)
           .toList();
+      for (final d in deals) {
+        d.favorite = favIds.contains(d.id);
+      }
       all = deals;
       final g = data['generatedAt'];
       generatedAt = g is String ? DateTime.tryParse(g) : null;

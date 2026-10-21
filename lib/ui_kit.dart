@@ -417,7 +417,7 @@ class DealCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: Stack(children: [
-                ImagePlate(deal: deal, height: 118),
+                ImagePlate(deal: deal, height: 140),
                 if (deal.percent != null) Positioned(left: 8, top: 8, child: DiscountBadge(deal.percent!)),
                 Positioned(right: 6, top: 6, child: HeartButton(value: deal.favorite, size: 32, onChanged: (_) => onFav())),
                 if (days != null) Positioned(left: 8, bottom: 8, child: ValidityPill(days)),

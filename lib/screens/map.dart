@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import '../data.dart';
 import '../models.dart';
@@ -17,8 +18,30 @@ class _MapScreenState extends State<MapScreen> {
   final mapController = MapController();
   Deal? selected;
   int chip = 0;
+  LatLng? _me;
   static const chips = ['Все', 'Продукты', 'Стройка', 'Техника', 'Рестораны'];
   static const chipCat = [null, 'food', 'building', 'electronics', 'restaurants'];
+
+  @override
+  void initState() {
+    super.initState();
+    _locate();
+  }
+
+  Future<void> _locate({bool recenter = false}) async {
+    try {
+      var perm = await Geolocator.checkPermission();
+      if (perm == LocationPermission.denied) {
+        perm = await Geolocator.requestPermission();
+      }
+      if (perm == LocationPermission.denied || perm == LocationPermission.deniedForever) return;
+      final pos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      if (!mounted) return;
+      setState(() => _me = LatLng(pos.latitude, pos.longitude));
+      if (recenter) mapController.move(_me!, 14);
+    } catch (_) {}
+  }
 
   @override
   void dispose() { mapController.dispose(); super.dispose(); }
@@ -71,6 +94,16 @@ class _MapScreenState extends State<MapScreen> {
                     },
                   ),
                 ),
+              if (_me != null)
+                Marker(
+                  point: _me!, width: 26, height: 26, alignment: Alignment.center,
+                  child: Container(
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: C.userDot.withValues(alpha: 0.25)),
+                    child: Center(child: Container(width: 14, height: 14,
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: C.userDot,
+                          border: Border.all(color: Colors.white, width: 2.5)))),
+                  ),
+                ),
             ],
           ),
         ],
@@ -99,6 +132,20 @@ class _MapScreenState extends State<MapScreen> {
                 border: Border.all(color: C.borderPanel)),
             child: Text('${deals.length} рядом', style: T.meta.copyWith(fontWeight: FontWeight.w700, color: C.text)),
           )),
+      // кнопка «где я»
+      Positioned(
+        right: 20, bottom: (selected != null ? 300 : 110) + 48,
+        child: PressScale(
+          onTap: () => _locate(recenter: true),
+          child: Container(
+            width: 48, height: 48,
+            decoration: BoxDecoration(color: C.panel, shape: BoxShape.circle,
+                border: Border.all(color: C.borderPanel),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 4))]),
+            child: Icon(Icons.my_location, color: _me != null ? C.green : C.text, size: 22),
+          ),
+        ),
+      ),
       if (selected != null) _selectedCard(selected!),
     ]);
   }

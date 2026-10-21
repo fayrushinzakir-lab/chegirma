@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
@@ -51,7 +52,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
               IconCircleButton(Icons.ios_share, bg: C.bg.withValues(alpha: 0.6), onTap: _openSource),
               const SizedBox(width: 10),
               Container(decoration: BoxDecoration(color: C.bg.withValues(alpha: 0.6), shape: BoxShape.circle),
-                child: HeartButton(value: d.favorite, size: 44, onChanged: (v) => setState(() => d.favorite = v))),
+                child: HeartButton(value: d.favorite, size: 44, onChanged: (_) => setState(() => DealsStore.I.toggleFav(d)))),
             ]),
           ),
         ),

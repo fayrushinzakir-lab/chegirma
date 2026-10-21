@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
@@ -50,7 +51,7 @@ class _DealsListScreenState extends State<DealsListScreen> {
                 delegate: SliverChildBuilderDelegate((_, i) => DealCard(
                   deal: deals[i],
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => DealDetailScreen(deal: deals[i]))),
-                  onFav: () => setState(() => deals[i].favorite = !deals[i].favorite),
+                  onFav: () => setState(() => DealsStore.I.toggleFav(deals[i])),
                 ), childCount: deals.length),
               ),
             ),
