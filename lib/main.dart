@@ -28,12 +28,19 @@ class Root extends StatefulWidget {
   State<Root> createState() => _RootState();
 }
 
+/// Онбординг показывается один раз за запуск приложения (в рамках сессии).
+bool _seenOnboarding = false;
+
 class _RootState extends State<Root> {
-  bool onboarded = false;
+  bool onboarded = _seenOnboarding;
+
   @override
   Widget build(BuildContext context) => onboarded
       ? const HomeShell()
-      : OnboardingScreen(onDone: () => setState(() => onboarded = true));
+      : OnboardingScreen(onDone: () => setState(() {
+            onboarded = true;
+            _seenOnboarding = true;
+          }));
 }
 
 class HomeShell extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 
 /// Источник реальных данных: публикуется GitHub Actions / парсером в репозиторий.
@@ -24,24 +23,12 @@ class DealsStore extends ChangeNotifier {
   String? error;
   DateTime? generatedAt;
 
-  // ───────── Избранное (сохраняется на устройстве) ─────────
+  // ───────── Избранное (в рамках сессии) ─────────
   final Set<String> favIds = {};
-  bool _favLoaded = false;
 
-  Future<void> loadFavs() async {
-    if (_favLoaded) return;
-    _favLoaded = true;
-    try {
-      final sp = await SharedPreferences.getInstance();
-      favIds.addAll(sp.getStringList('favIds') ?? const []);
-      for (final d in all) {
-        d.favorite = favIds.contains(d.id);
-      }
-      notifyListeners();
-    } catch (_) {}
-  }
+  Future<void> loadFavs() async {}
 
-  Future<void> toggleFav(Deal d) async {
+  void toggleFav(Deal d) {
     d.favorite = !d.favorite;
     if (d.favorite) {
       favIds.add(d.id);
@@ -49,10 +36,6 @@ class DealsStore extends ChangeNotifier {
       favIds.remove(d.id);
     }
     notifyListeners();
-    try {
-      final sp = await SharedPreferences.getInstance();
-      await sp.setStringList('favIds', favIds.toList());
-    } catch (_) {}
   }
 
   List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
