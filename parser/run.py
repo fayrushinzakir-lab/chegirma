@@ -13,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from parsers.base import Deal, dedupe  # noqa: E402
-from parsers import olx, olcha, texnomart, asaxiy  # noqa: E402
+from parsers import olx, olcha, texnomart, asaxiy, uzum  # noqa: E402
 
 # Активные источники. Новый парсер = добавить сюда функцию .parse().
 SOURCES = [
@@ -21,6 +21,7 @@ SOURCES = [
     ("Olcha.uz", olcha.parse),
     ("Texnomart", texnomart.parse),
     ("Asaxiy.uz", asaxiy.parse),
+    ("Uzum Market", uzum.parse),  # headless-браузер (Playwright) — только локально
 ]
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "docs", "deals.json")

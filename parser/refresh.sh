@@ -1,12 +1,14 @@
 #!/bin/bash
 # Автообновление скидок: запуск парсера + пуш в GitHub. Вызывается launchd каждые 2 ч.
-export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="$HOME/Library/Python/3.12/bin:$HOME/.local/bin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+PY=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+[ -x "$PY" ] || PY=python3
 LOG=/tmp/chegirmalar_parser.log
 REPO=/Users/zakir.fayrushin/discounts_app
 
 cd "$REPO" || exit 1
 echo "=== $(date) запуск парсера ===" >> "$LOG"
-/usr/bin/python3 parser/run.py >> "$LOG" 2>&1
+"$PY" parser/run.py >> "$LOG" 2>&1
 
 git add docs/deals.json
 if git diff --staged --quiet; then
