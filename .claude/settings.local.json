@@ -23,7 +23,15 @@
       "Bash(python3 parser/run.py)",
       "Bash(python3 -c \"import json;d=json.load\\(open\\('docs/deals.json'\\)\\);print\\('count:',d['count']\\);[print\\(f\\\\\"  {x['discountPercent']}% | {x['newPrice']} {x['currency']} | {x['title'][:45]} | {x['city']}\\\\\"\\) for x in d['deals'][:8]]\")",
       "Bash(python3 -c \"import certifi; print\\('certifi:', certifi.where\\(\\)\\)\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:core.telegram.org)",
+      "Bash(curl -s -m 15 https://gatewayapi.telegram.org/checkSendAbility -H 'Authorization: Bearer __CMDSUB_OUTPUT__' -d phone_number=+99900000000)",
+      "Bash(git check-ignore *)",
+      "Bash(curl -s -m 15 https://api.telegram.org/bot__TRACKED_VAR__/getMe)",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -sL -m 60 -o assets/fonts/Manrope.ttf https://github.com/google/fonts/raw/main/ofl/manrope/Manrope%5Bwght%5D.ttf)",
+      "Bash(cd *)",
+      "Bash(curl -s -m 15 -A 'Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) Chrome/124 Safari/537.36' -o /tmp/testimg.jpg -w 'http=%{http_code} type=%{content_type} size=%{size_download}\\\\n' 'https://frankfurt.apollo.olxcdn.com:443/v1/files/zcotzyj72ccf2-UZ/image;s=600x600')"
     ]
   }
 }

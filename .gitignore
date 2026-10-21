@@ -1,4 +1,8 @@
 # Chegirma extras
+.secrets/
+*.secret
+secrets.env
+.env
 *.apk
 *.aab
 run_screenshot.png
