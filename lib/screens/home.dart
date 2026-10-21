@@ -5,6 +5,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
 import 'deal_detail.dart';
+import 'deals_list.dart';
 import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   sliver: SliverToBoxAdapter(child: SearchBarField(onTap: () {})),
                 ),
                 const SliverToBoxAdapter(child: _HotBanner()),
+                SliverToBoxAdapter(child: _eventsSection()),
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 38,
@@ -133,6 +135,37 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: 180, child: PrimaryButton('Повторить', onTap: () => store.load(force: true))),
         ]),
       );
+
+  Widget _eventsSection() {
+    final events = [...promoEvents]..sort((a, b) => a.daysUntil.compareTo(b.daysUntil));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
+        child: Text('События и акции', style: T.section),
+      ),
+      SizedBox(
+        height: 118,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          itemCount: events.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          itemBuilder: (_, i) {
+            final e = events[i];
+            return EventCard(event: e, onTap: () {
+              final store = DealsStore.I;
+              final deals = e.categoryFilter != null
+                  ? store.byCategory(e.categoryFilter)
+                  : store.byCategory(null).where((d) => (d.percent ?? 0) >= 20).toList();
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => DealsListScreen(
+                title: e.title, subtitle: '${e.whenText} · ${deals.length} скидок', deals: deals)));
+            });
+          },
+        ),
+      ),
+      const SizedBox(height: 22),
+    ]);
+  }
 
   Widget _header() => Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),

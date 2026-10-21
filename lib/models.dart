@@ -41,6 +41,46 @@ Category catOf(String id) =>
 
 const _months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 
+/// Событийная акция (Чёрная пятница, 8 Марта и т.д.).
+class PromoEvent {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final int month;
+  final int day;
+  final String? categoryFilter; // если задано — показываем только эту категорию
+  const PromoEvent(this.title, this.subtitle, this.icon, this.color, this.month, this.day, {this.categoryFilter});
+
+  DateTime get nextDate {
+    final now = DateTime.now();
+    var d = DateTime(now.year, month, day);
+    if (d.isBefore(DateTime(now.year, now.month, now.day))) {
+      d = DateTime(now.year + 1, month, day);
+    }
+    return d;
+  }
+
+  int get daysUntil => nextDate.difference(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)).inDays;
+
+  String get whenText {
+    final n = daysUntil;
+    if (n == 0) return 'сегодня!';
+    if (n == 1) return 'завтра';
+    if (n <= 30) return 'через $n дн.';
+    return '${nextDate.day} ${_months[nextDate.month - 1]}';
+  }
+}
+
+const promoEvents = <PromoEvent>[
+  PromoEvent('Чёрная пятница', 'Скидки до −70% во всех магазинах', Icons.bolt, Color(0xFFE23D3D), 11, 28),
+  PromoEvent('Новый год', 'Подарки и акции к празднику', Icons.ac_unit, Color(0xFF4A9EFF), 12, 31),
+  PromoEvent('8 Марта · Женский день', 'Косметика, цветы, подарки', Icons.favorite, Color(0xFFE05AA8), 3, 8, categoryFilter: 'pharmacy'),
+  PromoEvent('Навруз', 'Весенние скидки', Icons.local_florist, Color(0xFF3DDC84), 3, 21),
+  PromoEvent('1 сентября', 'Всё для школы', Icons.school, Color(0xFFFF9F0A), 9, 1, categoryFilter: 'kids'),
+  PromoEvent('Киберпонедельник', 'Техника по лучшим ценам', Icons.devices, Color(0xFF8FB6E8), 12, 1, categoryFilter: 'electronics'),
+];
+
 class Deal {
   final String id;
   final String title;

@@ -457,6 +457,49 @@ class DealCard extends StatelessWidget {
   }
 }
 
+/// Карточка событийной акции (Чёрная пятница, 8 Марта…).
+class EventCard extends StatelessWidget {
+  final PromoEvent event;
+  final VoidCallback onTap;
+  const EventCard({super.key, required this.event, required this.onTap});
+  @override
+  Widget build(BuildContext context) {
+    return PressScale(
+      onTap: onTap,
+      child: Container(
+        width: 250,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: C.card,
+          borderRadius: BorderRadius.circular(R.card),
+          border: Border.all(color: C.border),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(
+              width: 40, height: 40,
+              decoration: BoxDecoration(color: event.color.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(12)),
+              child: Icon(event.icon, color: event.color, size: 22),
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(color: event.color.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(20)),
+              child: Text(event.whenText, style: TextStyle(fontFamily: kFont, fontSize: 12, fontWeight: FontWeight.w800, color: event.color)),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontFamily: kFont, fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
+          const SizedBox(height: 4),
+          Text(event.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis,
+              style: T.meta.copyWith(height: 1.3)),
+        ]),
+      ),
+    );
+  }
+}
+
 /// Метка магазина на карте.
 class MapMarker extends StatelessWidget {
   final String store;

@@ -3,6 +3,7 @@ import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
+import 'deals_list.dart';
 
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({super.key});
@@ -30,7 +31,8 @@ class CatalogScreen extends StatelessWidget {
                   final c = cats[i];
                   final n = store.countIn(c.id);
                   return PressScale(
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => DealsListScreen(title: c.name, deals: store.byCategory(c.id)))),
                     child: Container(
                       decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.card), border: Border.all(color: C.border)),
                       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -59,13 +61,19 @@ class CatalogScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   itemCount: stores.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (_, i) => Column(children: [
-                    StoreAvatar(stores[i].name, size: 60),
-                    const SizedBox(height: 8),
-                    SizedBox(width: 72, child: Text(stores[i].name, textAlign: TextAlign.center, maxLines: 1,
-                        overflow: TextOverflow.ellipsis, style: T.meta.copyWith(fontWeight: FontWeight.w600))),
-                    Text('${stores[i].count} скидок', style: T.meta.copyWith(fontSize: 10)),
-                  ]),
+                  itemBuilder: (_, i) => PressScale(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => DealsListScreen(
+                            title: stores[i].name,
+                            deals: store.all.where((d) => d.store == stores[i].name).toList()))),
+                    child: Column(children: [
+                      StoreAvatar(stores[i].name, size: 60),
+                      const SizedBox(height: 8),
+                      SizedBox(width: 72, child: Text(stores[i].name, textAlign: TextAlign.center, maxLines: 1,
+                          overflow: TextOverflow.ellipsis, style: T.meta.copyWith(fontWeight: FontWeight.w600))),
+                      Text('${stores[i].count} скидок', style: T.meta.copyWith(fontSize: 10)),
+                    ]),
+                  ),
                 ),
               )),
             ],
