@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../auth.dart';
 import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
+import 'login.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -30,21 +32,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ]),
             const SizedBox(height: 20),
             PressScale(
-              onTap: _loginSheet,
+              onTap: _openLogin,
               child: Row(children: [
                 Container(width: 64, height: 64,
                   decoration: const BoxDecoration(color: C.avatar, shape: BoxShape.circle),
-                  child: const Icon(Icons.person_outline, size: 30, color: C.text)),
+                  child: Icon(AppAuth.I.isLoggedIn ? Icons.verified_user : Icons.person_outline, size: 30,
+                      color: AppAuth.I.isLoggedIn ? C.green : C.text)),
                 const SizedBox(width: 16),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                  Text('Гость', style: TextStyle(fontFamily: kFont, fontSize: 19, fontWeight: FontWeight.w800)),
-                  SizedBox(height: 3),
-                  Row(children: [
-                    Text('Войти через Telegram', style: TextStyle(fontFamily: kFont, fontSize: 13, color: C.green, fontWeight: FontWeight.w600)),
-                    SizedBox(width: 4),
-                    Icon(Icons.chevron_right, size: 16, color: C.green),
-                  ]),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(AppAuth.I.isLoggedIn ? (AppAuth.I.name?.isNotEmpty == true ? AppAuth.I.name! : 'Вы вошли')
+                        : 'Гость',
+                      style: const TextStyle(fontFamily: kFont, fontSize: 19, fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 3),
+                  if (AppAuth.I.isLoggedIn)
+                    Text(AppAuth.I.phone ?? '', style: const TextStyle(fontFamily: kFont, fontSize: 13, color: C.textDim, fontWeight: FontWeight.w600))
+                  else
+                    Row(children: const [
+                      Text('Войти через Telegram', style: TextStyle(fontFamily: kFont, fontSize: 13, color: C.green, fontWeight: FontWeight.w600)),
+                      SizedBox(width: 4),
+                      Icon(Icons.chevron_right, size: 16, color: C.green),
+                    ]),
                 ])),
+                if (AppAuth.I.isLoggedIn)
+                  GestureDetector(onTap: () { AppAuth.I.logout(); setState(() {}); },
+                    child: const Icon(Icons.logout, size: 20, color: C.textDim)),
               ]),
             ),
             const SizedBox(height: 24),
@@ -151,29 +162,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _loginSheet() {
-    showModalBottomSheet(
-      context: context, backgroundColor: C.panel,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(R.sheet))),
-      builder: (_) => SafeArea(child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 20),
-          Center(child: Container(width: 64, height: 64,
-            decoration: BoxDecoration(color: const Color(0xFF229ED9).withValues(alpha: 0.16), shape: BoxShape.circle),
-            child: const Icon(Icons.telegram, color: Color(0xFF229ED9), size: 34))),
-          const SizedBox(height: 16),
-          const Text('Вход через Telegram', textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: kFont, fontSize: 20, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 8),
-          const Text('Быстрый вход по номеру телефона через Telegram-бота — бесплатно, без SMS. Подключается в ближайшем обновлении.',
-              textAlign: TextAlign.center, style: TextStyle(fontFamily: kFont, fontSize: 14, color: C.textDim, height: 1.4)),
-          const SizedBox(height: 20),
-          PrimaryButton('Понятно', onTap: () => Navigator.pop(context)),
-        ]),
-      )),
-    );
+  Future<void> _openLogin() async {
+    if (AppAuth.I.isLoggedIn) return;
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginScreen()));
+    if (mounted) setState(() {});
   }
 
   Widget _switchRow(String title, bool v, ValueChanged<bool> onCh) => Padding(
