@@ -33,6 +33,8 @@ class Deal:
     lon: Optional[float] = None
     phone: str = ""
     seller: str = ""
+    price_history: list = field(default_factory=list)  # [int, ...] наблюдения цены
+    fair: Optional[bool] = None  # честная ли скидка (по истории цен)
 
     def to_json(self) -> dict:
         d = asdict(self)
@@ -58,6 +60,8 @@ class Deal:
             "lon": d["lon"],
             "phone": d["phone"],
             "seller": d["seller"],
+            "priceHistory": d["price_history"],
+            "fair": d["fair"],
         }
 
 

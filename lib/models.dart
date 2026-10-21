@@ -100,6 +100,8 @@ class Deal {
   final double? lon;
   final String phone;
   final String seller;
+  final List<int> priceHistory;
+  final bool? fair;
   bool favorite;
 
   Deal({
@@ -107,6 +109,7 @@ class Deal {
     required this.category, this.oldPrice, this.newPrice, this.discountPercent,
     this.city = '', this.address = '', this.imageUrl = '', this.url = '', this.endsAt = '',
     this.lat, this.lon, this.phone = '', this.seller = '',
+    this.priceHistory = const [], this.fair,
     this.favorite = false,
   });
 
@@ -128,6 +131,8 @@ class Deal {
         lon: _asDouble(j['lon']),
         phone: (j['phone'] ?? '').toString(),
         seller: (j['seller'] ?? '').toString(),
+        priceHistory: (j['priceHistory'] as List?)?.map((e) => _asInt(e) ?? 0).where((e) => e > 0).toList() ?? const [],
+        fair: j['fair'] is bool ? j['fair'] as bool : null,
       );
 
   static double? _asDouble(dynamic v) {

@@ -134,6 +134,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                       ],
                       _infoRow(Symbols.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
                     ])),
+                    ..._priceHistory(d),
                     ..._similar(d),
                   ],
                 ),
@@ -182,6 +183,57 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         ),
       ),
       const SizedBox(height: 8),
+    ];
+  }
+
+  List<Widget> _priceHistory(Deal d) {
+    final (String vt, Color vc, IconData vi) = switch (d.fair) {
+      true => ('Честная скидка', C.saveText, Symbols.verified),
+      false => ('Проверьте цену', C.warn, Symbols.warning),
+      _ => ('Цена отслеживается', C.textDim, Symbols.timeline),
+    };
+    final verdictChip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(color: vc.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(8)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(vi, size: 14, color: vc), const SizedBox(width: 4),
+        Text(vt, style: TextStyle(fontFamily: kFont, color: vc, fontSize: 12, fontWeight: FontWeight.w700)),
+      ]),
+    );
+    final h = d.priceHistory;
+    if (h.length < 2) {
+      return [const SizedBox(height: 12), _block(child: Row(children: [
+        Icon(vi, size: 18, color: vc), const SizedBox(width: 8),
+        Text(vt, style: TextStyle(fontFamily: kFont, fontSize: 14, fontWeight: FontWeight.w700, color: vc)),
+        const Spacer(), Text('история копится', style: T.meta),
+      ]))];
+    }
+    final maxV = h.reduce((a, b) => a > b ? a : b).toDouble();
+    final minV = h.reduce((a, b) => a < b ? a : b).toDouble();
+    return [
+      const SizedBox(height: 12),
+      _block(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [const Text('История цены', style: TextStyle(fontFamily: kFont, fontSize: 15, fontWeight: FontWeight.w700)),
+          const Spacer(), verdictChip]),
+        const SizedBox(height: 14),
+        SizedBox(height: 70, child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          for (int i = 0; i < h.length; i++) ...[
+            Expanded(child: Container(
+              height: 16 + (maxV > minV ? (h[i] - minV) / (maxV - minV) : 0.5) * 48,
+              decoration: BoxDecoration(
+                color: i == h.length - 1 ? C.green : C.raised2,
+                borderRadius: BorderRadius.circular(5)),
+            )),
+            if (i < h.length - 1) const SizedBox(width: 5),
+          ],
+        ])),
+        const SizedBox(height: 8),
+        Row(children: [
+          Text('мин ${groupPrice(minV.round())}', style: T.meta),
+          const Spacer(),
+          Text('макс ${groupPrice(maxV.round())}', style: T.meta),
+        ]),
+      ])),
     ];
   }
 

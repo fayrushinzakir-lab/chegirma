@@ -25,6 +25,41 @@ SOURCES = [
 ]
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "docs", "deals.json")
+HIST = os.path.join(os.path.dirname(__file__), "..", "docs", "price_history.json")
+
+
+def _apply_price_history(deals: list[Deal], now: datetime) -> None:
+    """Копит историю цен по товару и ставит вердикт «честная скидка».
+
+    Фейк = заявленная старая цена заметно выше всего, что реально наблюдали.
+    Пока наблюдений мало — вердикт None (история копится).
+    """
+    try:
+        hist = json.load(open(HIST, encoding="utf-8")) if os.path.exists(HIST) else {}
+    except Exception:  # noqa: BLE001
+        hist = {}
+    ts = now.strftime("%Y-%m-%dT%H:%M")
+    for d in deals:
+        if not d.new_price:
+            continue
+        rec = hist.get(d.id) or []
+        rec.append([ts, d.new_price])   # одно наблюдение на прогон (каждые ~2ч)
+        rec = rec[-10:]
+        hist[d.id] = rec
+        prices = [p for _, p in rec]
+        d.price_history = prices
+        if len(prices) >= 3:
+            observed_max = max(prices)
+            d.fair = not (d.old_price and d.old_price > observed_max * 1.25)
+        else:
+            d.fair = None  # ещё копим
+    # прунинг: не виденные 14 дней — выкидываем (ограничение роста файла)
+    cutoff = (now - timedelta(days=14)).strftime("%Y-%m-%d")
+    hist = {k: v for k, v in hist.items() if v and v[-1][0] >= cutoff}
+    try:
+        json.dump(hist, open(HIST, "w", encoding="utf-8"), ensure_ascii=False)
+    except Exception:  # noqa: BLE001
+        pass
 
 
 def _is_expired(d: Deal, now: datetime) -> bool:
@@ -68,6 +103,9 @@ def main() -> int:
 
     all_deals = [d for d in all_deals if _ok(d)]
     all_deals = dedupe(all_deals)
+
+    # история цен + вердикт «честная скидка»
+    _apply_price_history(all_deals, now)
 
     # сортировка по качеству (как в приложении): настоящая скидка с фото — вперёд
     def _quality(d: Deal) -> int:
