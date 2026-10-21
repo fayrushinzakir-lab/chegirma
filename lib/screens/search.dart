@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../models.dart';
 import '../persist.dart';
@@ -47,13 +48,13 @@ class _SearchScreenState extends State<SearchScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Row(children: [
-              IconCircleButton(Icons.arrow_back, onTap: () => Navigator.of(context).pop()),
+              IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop()),
               const SizedBox(width: 10),
               Expanded(child: Container(
                 height: 50, padding: const EdgeInsets.symmetric(horizontal: 14),
                 decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.search), border: Border.all(color: C.border)),
                 child: Row(children: [
-                  const Icon(Icons.search, color: C.textDim, size: 22),
+                  const Icon(Symbols.search, color: C.textDim, size: 22),
                   const SizedBox(width: 10),
                   Expanded(child: TextField(
                     controller: ctrl, autofocus: true,
@@ -67,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   )),
                   if (q.isNotEmpty) GestureDetector(
                     onTap: () => setState(() { q = ''; ctrl.clear(); }),
-                    child: const Icon(Icons.close, color: C.textDim, size: 20)),
+                    child: const Icon(Symbols.close, color: C.textDim, size: 20)),
                 ]),
               )),
             ]),
@@ -117,12 +118,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Text('Очистить', style: T.meta.copyWith(color: C.green, fontWeight: FontWeight.w600))),
             ]),
             const SizedBox(height: 12),
-            Wrap(spacing: 8, runSpacing: 8, children: [for (final s in recent) _chip(s, Icons.history)]),
+            Wrap(spacing: 8, runSpacing: 8, children: [for (final s in recent) _chip(s, Symbols.history)]),
             const SizedBox(height: 24),
           ],
           Text('Популярные запросы', style: T.meta.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
-          Wrap(spacing: 8, runSpacing: 8, children: [for (final s in suggestions) _chip(s, Icons.trending_up)]),
+          Wrap(spacing: 8, runSpacing: 8, children: [for (final s in suggestions) _chip(s, Symbols.trending_up)]),
         ],
       );
 

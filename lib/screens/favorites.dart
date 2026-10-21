@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
@@ -25,7 +26,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               SliverToBoxAdapter(child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 14),
                 child: Row(children: [
-                  IconCircleButton(Icons.arrow_back, onTap: () => Navigator.of(context).pop()),
+                  IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop()),
                   const SizedBox(width: 12),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     const Text('Избранное', style: T.screenTitle),
@@ -39,7 +40,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Container(width: 72, height: 72,
                       decoration: BoxDecoration(color: C.card, shape: BoxShape.circle, border: Border.all(color: C.border)),
-                      child: const Icon(Icons.favorite_border, color: C.textDim, size: 32)),
+                      child: const Icon(Symbols.favorite_border, color: C.textDim, size: 32)),
                     const SizedBox(height: 16),
                     const Text('Пока пусто', style: TextStyle(fontFamily: kFont, fontSize: 18, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 6),

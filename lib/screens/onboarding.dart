@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../theme.dart';
 import '../ui_kit.dart';
@@ -45,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           for (final c in cities)
             ListTile(
               onTap: () { setState(() => city = c); Navigator.pop(context); },
-              leading: Icon(city == c ? Icons.radio_button_checked : Icons.radio_button_off, color: city == c ? C.green : C.textDim, size: 22),
+              leading: Icon(city == c ? Symbols.radio_button_checked : Symbols.radio_button_unchecked, color: city == c ? C.green : C.textDim, size: 22),
               title: Text(c, style: TextStyle(fontFamily: kFont, fontSize: 15, color: city == c ? C.text : C.textDim, fontWeight: city == c ? FontWeight.w700 : FontWeight.w500)),
             ),
         ])),
@@ -119,7 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               height: 54, padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: C.border)),
               child: Row(children: [
-                const Icon(Icons.place_outlined, size: 18, color: C.textDim),
+                const Icon(Symbols.place, size: 18, color: C.textDim),
                 const SizedBox(width: 8),
                 Text(city, style: const TextStyle(fontFamily: kFont, fontSize: 15, fontWeight: FontWeight.w600)),
                 const Spacer(),
@@ -127,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ]),
             )),
             const SizedBox(height: 14),
-            PrimaryButton('Начать', icon: Icons.arrow_forward, onTap: _finish),
+            PrimaryButton('Начать', icon: Symbols.arrow_forward, onTap: _finish),
             const SizedBox(height: 12),
           ]),
         ),
@@ -142,7 +143,7 @@ class _IconHero extends StatelessWidget {
   const _IconHero(this.page);
   @override
   Widget build(BuildContext context) {
-    final icon = page == 1 ? Icons.near_me_outlined : Icons.notifications_active_outlined;
+    final icon = page == 1 ? Symbols.near_me : Symbols.notifications_active;
     return Center(child: Container(
       width: 140, height: 140,
       decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(36), border: Border.all(color: C.border)),

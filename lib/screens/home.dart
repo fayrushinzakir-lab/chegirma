@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -133,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _errorBox(DealsStore store) => Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.wifi_off_rounded, size: 40, color: C.textDim),
+          const Icon(Symbols.wifi_off, size: 40, color: C.textDim),
           const SizedBox(height: 14),
           const Text('Не удалось загрузить скидки', style: TextStyle(fontFamily: kFont, fontSize: 16, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
@@ -170,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final active = store.selectedCity == value;
     return ListTile(
       onTap: () { store.setCity(value); Navigator.pop(context); setState(() {}); },
-      leading: Icon(active ? Icons.radio_button_checked : Icons.radio_button_off,
+      leading: Icon(active ? Symbols.radio_button_checked : Symbols.radio_button_unchecked,
           color: active ? C.green : C.textDim, size: 22),
       title: Text(label, style: TextStyle(fontFamily: kFont, fontSize: 15,
           fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? C.text : C.textDim)),
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(children: const [
           Text('События и акции', style: T.section),
           SizedBox(width: 8),
-          Icon(Icons.auto_awesome, size: 16, color: C.yellow),
+          Icon(Symbols.auto_awesome, size: 16, color: C.yellow),
         ]),
       ),
       Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
@@ -227,11 +228,11 @@ class _HomeScreenState extends State<HomeScreen> {
               PressScale(
                 onTap: _showCitySheet,
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.place_outlined, size: 15, color: C.textDim),
+                  const Icon(Symbols.place, size: 15, color: C.textDim),
                   const SizedBox(width: 4),
                   Text(DealsStore.I.selectedCity ?? 'Все города Узбекистана',
                       style: const TextStyle(fontFamily: kFont, fontSize: 13, color: C.textDim, fontWeight: FontWeight.w600)),
-                  const Icon(Icons.keyboard_arrow_down, size: 16, color: C.textDim),
+                  const Icon(Symbols.keyboard_arrow_down, size: 16, color: C.textDim),
                 ]),
               ),
               const SizedBox(height: 4),
@@ -241,11 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ]),
             ]),
           ),
-          IconCircleButton(Icons.favorite_border,
+          IconCircleButton(Symbols.favorite_border,
               onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesScreen()))),
           const SizedBox(width: 10),
           Stack(children: [
-            IconCircleButton(Icons.notifications_none_rounded, onTap: () {
+            IconCircleButton(Symbols.notifications_none, onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('Уведомления о скидках появятся здесь', style: TextStyle(fontFamily: kFont, color: C.text)),
                 backgroundColor: C.card, duration: Duration(seconds: 2)));
@@ -258,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfileScreen())),
             child: Container(width: 44, height: 44,
               decoration: const BoxDecoration(color: C.avatar, shape: BoxShape.circle),
-              child: const Icon(Icons.person_outline, color: C.text, size: 22)),
+              child: const Icon(Symbols.person_outline, color: C.text, size: 22)),
           ),
         ]),
       );
@@ -364,7 +365,7 @@ class _HotBannerState extends State<_HotBanner> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(color: C.onAccent, borderRadius: BorderRadius.circular(20)),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.local_fire_department, size: 13, color: C.yellow),
+              const Icon(Symbols.local_fire_department, size: 13, color: C.yellow),
               const SizedBox(width: 5),
               Text('$h:$m:$s', style: const TextStyle(fontFamily: kFont, color: C.text, fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1)),
             ]))),

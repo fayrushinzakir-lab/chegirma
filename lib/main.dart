@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'auth.dart';
 import 'data.dart';
 import 'persist.dart';
@@ -57,10 +58,10 @@ class _HomeShellState extends State<HomeShell> {
   int index = 0;
   final pages = const [HomeScreen(), CatalogScreen(), MapScreen(), ShoppingListScreen()];
   static const tabs = [
-    (Icons.home_outlined, Icons.home, 'Главная'),
-    (Icons.grid_view_outlined, Icons.grid_view_rounded, 'Каталог'),
-    (Icons.map_outlined, Icons.map, 'Карта'),
-    (Icons.list_alt_outlined, Icons.list_alt, 'Список'),
+    (Symbols.home, Symbols.home, 'Главная'),
+    (Symbols.grid_view, Symbols.grid_view, 'Каталог'),
+    (Symbols.map, Symbols.map, 'Карта'),
+    (Symbols.list_alt, Symbols.list_alt, 'Список'),
   ];
 
   @override

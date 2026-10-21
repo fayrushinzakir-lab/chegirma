@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'models.dart';
 import 'theme.dart';
 
@@ -131,7 +132,7 @@ class SearchBarField extends StatelessWidget {
               decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.search),
                   border: Border.all(color: C.border)),
               child: Row(children: [
-                const Icon(Icons.search, color: C.textDim, size: 22),
+                const Icon(Symbols.search, color: C.textDim, size: 22),
                 const SizedBox(width: 10),
                 Text(hint, style: const TextStyle(fontFamily: kFont, color: C.textDim, fontSize: 15)),
               ]),
@@ -145,7 +146,7 @@ class SearchBarField extends StatelessWidget {
             child: Container(
               width: 52, height: 52,
               decoration: BoxDecoration(color: C.raised2, borderRadius: BorderRadius.circular(R.search)),
-              child: const Icon(Icons.tune, color: C.text, size: 22),
+              child: const Icon(Symbols.tune, color: C.text, size: 22),
             ),
           ),
         ],
@@ -255,7 +256,7 @@ class ValidityPill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: C.bg.withValues(alpha: 0.72), borderRadius: BorderRadius.circular(8)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.schedule, size: 12, color: soon ? C.warn : C.textDim),
+        Icon(Symbols.schedule, size: 12, color: soon ? C.warn : C.textDim),
         const SizedBox(width: 4),
         Text(days <= 0 ? 'сегодня' : '$days дн.',
             style: TextStyle(fontFamily: kFont, fontSize: 11, fontWeight: FontWeight.w700, color: soon ? C.warn : C.text)),
@@ -292,7 +293,7 @@ class _HeartButtonState extends State<HeartButton> with SingleTickerProviderStat
           decoration: BoxDecoration(color: C.bg.withValues(alpha: 0.55), shape: BoxShape.circle),
           child: ScaleTransition(
             scale: scale,
-            child: Icon(widget.value ? Icons.favorite : Icons.favorite_border,
+            child: Icon(widget.value ? Symbols.favorite : Symbols.favorite_border,
                 color: widget.value ? C.red : C.text, size: widget.size * 0.5),
           ),
         ),
@@ -491,7 +492,7 @@ class EventCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(color: c.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(20)),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.schedule, size: 12, color: c),
+                  Icon(Symbols.schedule, size: 12, color: c),
                   const SizedBox(width: 4),
                   Text(event.whenText, style: TextStyle(fontFamily: kFont, fontSize: 12, fontWeight: FontWeight.w800, color: c)),
                 ]),
@@ -506,7 +507,7 @@ class EventCard extends StatelessWidget {
               Text(dealsCount > 0 ? 'Смотреть $dealsCount скидок' : 'Смотреть скидки',
                   style: TextStyle(fontFamily: kFont, fontSize: 13, fontWeight: FontWeight.w800, color: c)),
               const SizedBox(width: 4),
-              Icon(Icons.arrow_forward, size: 15, color: c),
+              Icon(Symbols.arrow_forward, size: 15, color: c),
             ]),
           ]),
         ]),

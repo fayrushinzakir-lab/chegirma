@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../auth.dart';
 import '../data.dart';
 import '../models.dart';
@@ -26,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
           children: [
             Row(children: [
-              IconCircleButton(Icons.arrow_back, onTap: () => Navigator.of(context).pop()),
+              IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop()),
               const SizedBox(width: 12),
               const Text('Профиль', style: T.screenTitle),
             ]),
@@ -36,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(children: [
                 Container(width: 64, height: 64,
                   decoration: const BoxDecoration(color: C.avatar, shape: BoxShape.circle),
-                  child: Icon(AppAuth.I.isLoggedIn ? Icons.verified_user : Icons.person_outline, size: 30,
+                  child: Icon(AppAuth.I.isLoggedIn ? Symbols.verified_user : Symbols.person_outline, size: 30,
                       color: AppAuth.I.isLoggedIn ? C.green : C.text)),
                 const SizedBox(width: 16),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -50,18 +51,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(children: const [
                       Text('Войти через Telegram', style: TextStyle(fontFamily: kFont, fontSize: 13, color: C.green, fontWeight: FontWeight.w600)),
                       SizedBox(width: 4),
-                      Icon(Icons.chevron_right, size: 16, color: C.green),
+                      Icon(Symbols.chevron_right, size: 16, color: C.green),
                     ]),
                 ])),
                 if (AppAuth.I.isLoggedIn)
                   GestureDetector(onTap: () { AppAuth.I.logout(); setState(() {}); },
-                    child: const Icon(Icons.logout, size: 20, color: C.textDim)),
+                    child: const Icon(Symbols.logout, size: 20, color: C.textDim)),
               ]),
             ),
             const SizedBox(height: 24),
             _label('Город'),
-            _tile(Icons.location_city_outlined, DealsStore.I.selectedCity ?? 'Все города Узбекистана',
-                onTap: _citySheet, trailing: const Icon(Icons.chevron_right, color: C.textDim)),
+            _tile(Symbols.location_city, DealsStore.I.selectedCity ?? 'Все города Узбекистана',
+                onTap: _citySheet, trailing: const Icon(Symbols.chevron_right, color: C.textDim)),
             const SizedBox(height: 20),
             _label('Язык'),
             Row(children: List.generate(langs.length, (i) => Expanded(
@@ -150,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           for (final c in <String?>[null, ...store.cities])
             ListTile(
               onTap: () { store.setCity(c); Navigator.pop(context); setState(() {}); },
-              leading: Icon(store.selectedCity == c ? Icons.radio_button_checked : Icons.radio_button_off,
+              leading: Icon(store.selectedCity == c ? Symbols.radio_button_checked : Symbols.radio_button_unchecked,
                   color: store.selectedCity == c ? C.green : C.textDim, size: 22),
               title: Text(c ?? 'Все города Узбекистана',
                   style: TextStyle(fontFamily: kFont, fontSize: 15, color: store.selectedCity == c ? C.text : C.textDim,

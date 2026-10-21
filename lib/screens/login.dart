@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../auth.dart';
 import '../theme.dart';
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(24),
           child: Column(children: [
             Align(alignment: Alignment.centerLeft,
-              child: IconCircleButton(Icons.arrow_back, onTap: () => Navigator.of(context).pop())),
+              child: IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop())),
             const Spacer(),
             Container(width: 88, height: 88,
               decoration: BoxDecoration(color: const Color(0xFF229ED9).withValues(alpha: 0.16), shape: BoxShape.circle),

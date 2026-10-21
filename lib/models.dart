@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'theme.dart';
 
 enum Tint { food, build, tech, soft }
@@ -19,21 +20,21 @@ class Category {
 }
 
 const categories = <Category>[
-  Category('food', 'Продукты', Icons.shopping_basket_outlined, Tint.food),
-  Category('drinks', 'Напитки', Icons.local_drink_outlined, Tint.food),
-  Category('household', 'Бытовая химия', Icons.cleaning_services_outlined, Tint.soft),
-  Category('electronics', 'Электроника', Icons.tv_outlined, Tint.tech),
-  Category('phones', 'Телефоны', Icons.smartphone_outlined, Tint.tech),
-  Category('clothing', 'Одежда', Icons.checkroom_outlined, Tint.soft),
-  Category('building', 'Стройматериалы', Icons.construction_outlined, Tint.build),
-  Category('plumbing', 'Сантехника', Icons.plumbing_outlined, Tint.build),
-  Category('tools', 'Инструменты', Icons.handyman_outlined, Tint.build),
-  Category('furniture', 'Мебель', Icons.chair_outlined, Tint.build),
-  Category('pharmacy', 'Аптека', Icons.medical_services_outlined, Tint.soft),
-  Category('kids', 'Детям', Icons.toys_outlined, Tint.soft),
-  Category('auto', 'Авто', Icons.directions_car_outlined, Tint.tech),
-  Category('restaurants', 'Рестораны', Icons.restaurant_outlined, Tint.food),
-  Category('other', 'Разное', Icons.local_offer_outlined, Tint.soft),
+  Category('food', 'Продукты', Symbols.shopping_basket, Tint.food),
+  Category('drinks', 'Напитки', Symbols.local_drink, Tint.food),
+  Category('household', 'Бытовая химия', Symbols.cleaning_services, Tint.soft),
+  Category('electronics', 'Электроника', Symbols.tv, Tint.tech),
+  Category('phones', 'Телефоны', Symbols.smartphone, Tint.tech),
+  Category('clothing', 'Одежда', Symbols.checkroom, Tint.soft),
+  Category('building', 'Стройматериалы', Symbols.construction, Tint.build),
+  Category('plumbing', 'Сантехника', Symbols.plumbing, Tint.build),
+  Category('tools', 'Инструменты', Symbols.handyman, Tint.build),
+  Category('furniture', 'Мебель', Symbols.chair, Tint.build),
+  Category('pharmacy', 'Аптека', Symbols.medical_services, Tint.soft),
+  Category('kids', 'Детям', Symbols.toys, Tint.soft),
+  Category('auto', 'Авто', Symbols.directions_car, Tint.tech),
+  Category('restaurants', 'Рестораны', Symbols.restaurant, Tint.food),
+  Category('other', 'Разное', Symbols.local_offer, Tint.soft),
 ];
 
 Category catOf(String id) =>
@@ -73,12 +74,12 @@ class PromoEvent {
 }
 
 const promoEvents = <PromoEvent>[
-  PromoEvent('Чёрная пятница', 'Скидки до −70% во всех магазинах', Icons.bolt, Color(0xFFE23D3D), 11, 28),
-  PromoEvent('Новый год', 'Подарки и акции к празднику', Icons.ac_unit, Color(0xFF4A9EFF), 12, 31),
-  PromoEvent('8 Марта · Женский день', 'Косметика, цветы, подарки', Icons.favorite, Color(0xFFE05AA8), 3, 8, categoryFilter: 'pharmacy'),
-  PromoEvent('Навруз', 'Весенние скидки', Icons.local_florist, Color(0xFF3DDC84), 3, 21),
-  PromoEvent('1 сентября', 'Всё для школы', Icons.school, Color(0xFFFF9F0A), 9, 1, categoryFilter: 'kids'),
-  PromoEvent('Киберпонедельник', 'Техника по лучшим ценам', Icons.devices, Color(0xFF8FB6E8), 12, 1, categoryFilter: 'electronics'),
+  PromoEvent('Чёрная пятница', 'Скидки до −70% во всех магазинах', Symbols.bolt, Color(0xFFE23D3D), 11, 28),
+  PromoEvent('Новый год', 'Подарки и акции к празднику', Symbols.ac_unit, Color(0xFF4A9EFF), 12, 31),
+  PromoEvent('8 Марта · Женский день', 'Косметика, цветы, подарки', Symbols.favorite, Color(0xFFE05AA8), 3, 8, categoryFilter: 'pharmacy'),
+  PromoEvent('Навруз', 'Весенние скидки', Symbols.local_florist, Color(0xFF3DDC84), 3, 21),
+  PromoEvent('1 сентября', 'Всё для школы', Symbols.school, Color(0xFFFF9F0A), 9, 1, categoryFilter: 'kids'),
+  PromoEvent('Киберпонедельник', 'Техника по лучшим ценам', Symbols.devices, Color(0xFF8FB6E8), 12, 1, categoryFilter: 'electronics'),
 ];
 
 class Deal {

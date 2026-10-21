@@ -41,6 +41,7 @@ dependencies:
   geolocator: ^13.0.1
   path_provider: ^2.1.4
   share_plus: ^10.1.2
+  material_symbols_icons: ^4.2801.0
 
 dev_dependencies:
   flutter_test:

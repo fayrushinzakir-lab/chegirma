@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -154,7 +155,7 @@ class _MapScreenState extends State<MapScreen> {
             decoration: BoxDecoration(color: C.panel, shape: BoxShape.circle,
                 border: Border.all(color: C.borderPanel),
                 boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 4))]),
-            child: Icon(Icons.my_location, color: _me != null ? C.green : C.text, size: 22),
+            child: Icon(Symbols.my_location, color: _me != null ? C.green : C.text, size: 22),
           ),
         ),
       ),
@@ -187,7 +188,7 @@ class _MapScreenState extends State<MapScreen> {
                 PriceText(d.newPrice!, size: 16),
                 if (_me != null) ...[
                   const Spacer(),
-                  const Icon(Icons.near_me_outlined, size: 13, color: C.textDim),
+                  const Icon(Symbols.near_me, size: 13, color: C.textDim),
                   const SizedBox(width: 3),
                   Text('${const Distance().as(LengthUnit.Kilometer, _me!, LatLng(d.lat!, d.lon!)).toStringAsFixed(1)} км',
                       style: T.meta),
@@ -197,7 +198,7 @@ class _MapScreenState extends State<MapScreen> {
             const SizedBox(width: 8),
             Container(width: 48, height: 48,
               decoration: const BoxDecoration(color: C.green, shape: BoxShape.circle),
-              child: const Icon(Icons.near_me, color: C.onAccent, size: 22)),
+              child: const Icon(Symbols.near_me, color: C.onAccent, size: 22)),
           ]),
         ),
       ));

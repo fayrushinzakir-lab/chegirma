@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -66,14 +67,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 const SizedBox(width: 10),
                 PressScale(onTap: _add, child: Container(width: 52, height: 52,
                   decoration: BoxDecoration(color: C.green, borderRadius: BorderRadius.circular(R.search)),
-                  child: const Icon(Icons.add, color: C.onAccent, size: 26))),
+                  child: const Icon(Symbols.add, color: C.onAccent, size: 26))),
               ]),
               const SizedBox(height: 14),
               Container(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
                 decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.card), border: Border.all(color: C.border)),
                 child: Row(children: [
-                  const Icon(Icons.notifications_active_outlined, size: 20, color: C.green),
+                  const Icon(Symbols.notifications_active, size: 20, color: C.green),
                   const SizedBox(width: 12),
                   const Expanded(child: Text('Уведомления о скидках', style: TextStyle(fontFamily: kFont, fontSize: 15, fontWeight: FontWeight.w600))),
                   AppToggle(value: notify, onChanged: (v) => setState(() => notify = v)),
@@ -129,7 +130,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               if (d.percent != null) DiscountBadge(d.percent!),
               const SizedBox(height: 6),
               GestureDetector(onTap: () => DealsStore.I.removeWatch(query),
-                child: const Icon(Icons.close, size: 18, color: C.textDim)),
+                child: const Icon(Symbols.close, size: 18, color: C.textDim)),
             ]),
           ]),
         ),
@@ -141,7 +142,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(R.card), border: Border.all(color: C.border)),
         child: Row(children: [
           Container(width: 40, height: 40, decoration: const BoxDecoration(color: C.raised2, shape: BoxShape.circle),
-            child: const Icon(Icons.schedule, size: 20, color: C.textDim)),
+            child: const Icon(Symbols.schedule, size: 20, color: C.textDim)),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: kFont, fontSize: 14, fontWeight: FontWeight.w600)),
@@ -149,7 +150,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             const Text('Следим за ценой', style: T.meta),
           ])),
           GestureDetector(onTap: () => DealsStore.I.removeWatch(name),
-            child: const Icon(Icons.close, size: 18, color: C.textDim)),
+            child: const Icon(Symbols.close, size: 18, color: C.textDim)),
         ]),
       );
 }

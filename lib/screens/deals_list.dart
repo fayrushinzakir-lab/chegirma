@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import '../data.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -26,7 +27,7 @@ class _DealsListScreenState extends State<DealsListScreen> {
           SliverToBoxAdapter(child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 14),
             child: Row(children: [
-              IconCircleButton(Icons.arrow_back, onTap: () => Navigator.of(context).pop()),
+              IconCircleButton(Symbols.arrow_back, onTap: () => Navigator.of(context).pop()),
               const SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(widget.title, style: T.screenTitle.copyWith(fontSize: 24), maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -37,7 +38,7 @@ class _DealsListScreenState extends State<DealsListScreen> {
           if (deals.isEmpty)
             SliverFillRemaining(hasScrollBody: false, child: Center(
               child: Padding(padding: const EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: const [
-                Icon(Icons.search_off, size: 40, color: C.textDim),
+                Icon(Symbols.search_off, size: 40, color: C.textDim),
                 SizedBox(height: 12),
                 Text('Пока нет скидок в этом разделе', style: T.meta),
               ])),

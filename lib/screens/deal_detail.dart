@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data.dart';
@@ -56,9 +57,9 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
             child: Row(children: [
-              IconCircleButton(Icons.arrow_back, bg: C.bg.withValues(alpha: 0.6), onTap: () => Navigator.of(context).pop()),
+              IconCircleButton(Symbols.arrow_back, bg: C.bg.withValues(alpha: 0.6), onTap: () => Navigator.of(context).pop()),
               const Spacer(),
-              IconCircleButton(Icons.ios_share, bg: C.bg.withValues(alpha: 0.6), onTap: _share),
+              IconCircleButton(Symbols.ios_share, bg: C.bg.withValues(alpha: 0.6), onTap: _share),
               const SizedBox(width: 10),
               Container(decoration: BoxDecoration(color: C.bg.withValues(alpha: 0.6), shape: BoxShape.circle),
                 child: HeartButton(value: d.favorite, size: 44, onChanged: (_) => setState(() => DealsStore.I.toggleFav(d)))),
@@ -84,7 +85,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                           style: T.meta.copyWith(fontWeight: FontWeight.w700, fontSize: 13))),
                       if (d.city.isNotEmpty) ...[
                         const SizedBox(width: 8),
-                        const Icon(Icons.place_outlined, size: 14, color: C.textDim),
+                        const Icon(Symbols.place, size: 14, color: C.textDim),
                         const SizedBox(width: 2),
                         Text(d.city, style: T.meta),
                       ],
@@ -120,18 +121,18 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                     const SizedBox(height: 12),
                     _block(child: Column(children: [
                       if (d.address.isNotEmpty) ...[
-                        _infoRow(Icons.place_outlined, 'Адрес', '${d.city}${d.address.isNotEmpty ? ', ${d.address}' : ''}'),
+                        _infoRow(Symbols.place, 'Адрес', '${d.city}${d.address.isNotEmpty ? ', ${d.address}' : ''}'),
                         const SizedBox(height: 14),
                       ],
                       if (d.seller.isNotEmpty) ...[
-                        _infoRow(Icons.storefront_outlined, 'Продавец', d.seller),
+                        _infoRow(Symbols.storefront, 'Продавец', d.seller),
                         const SizedBox(height: 14),
                       ],
                       if (d.phone.isNotEmpty) ...[
-                        _infoRow(Icons.call_outlined, 'Телефон', d.phone),
+                        _infoRow(Symbols.call, 'Телефон', d.phone),
                         const SizedBox(height: 14),
                       ],
-                      _infoRow(Icons.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
+                      _infoRow(Symbols.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
                     ])),
                     ..._similar(d),
                   ],
@@ -142,14 +143,14 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                 decoration: const BoxDecoration(color: C.bg, border: Border(top: BorderSide(color: C.border))),
                 child: d.phone.isNotEmpty
                     ? Row(children: [
-                        Expanded(flex: 3, child: PrimaryButton('Позвонить', icon: Icons.call, onTap: _call)),
+                        Expanded(flex: 3, child: PrimaryButton('Позвонить', icon: Symbols.call, onTap: _call)),
                         const SizedBox(width: 10),
-                        Expanded(flex: 2, child: SecondaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
+                        Expanded(flex: 2, child: SecondaryButton('Открыть', icon: Symbols.open_in_new, onTap: _openSource)),
                       ])
                     : Row(children: [
-                        Expanded(flex: 3, child: PrimaryButton('Открыть', icon: Icons.open_in_new, onTap: _openSource)),
+                        Expanded(flex: 3, child: PrimaryButton('Открыть', icon: Symbols.open_in_new, onTap: _openSource)),
                         const SizedBox(width: 10),
-                        Expanded(flex: 2, child: SecondaryButton('В список', icon: Icons.add, onTap: () {
+                        Expanded(flex: 2, child: SecondaryButton('В список', icon: Symbols.add, onTap: () {
                           DealsStore.I.addWatch(d.title);
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text('Добавлено в список покупок', style: TextStyle(fontFamily: kFont, color: C.text)),
