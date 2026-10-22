@@ -26,6 +26,8 @@ const categories = <Category>[
   Category('electronics', 'Электроника', Symbols.tv, Tint.tech),
   Category('phones', 'Телефоны', Symbols.smartphone, Tint.tech),
   Category('clothing', 'Одежда', Symbols.checkroom, Tint.soft),
+  Category('beauty', 'Красота', Symbols.spa, Tint.soft),
+  Category('sports', 'Спорт', Symbols.fitness_center, Tint.tech),
   Category('building', 'Стройматериалы', Symbols.construction, Tint.build),
   Category('plumbing', 'Сантехника', Symbols.plumbing, Tint.build),
   Category('tools', 'Инструменты', Symbols.handyman, Tint.build),

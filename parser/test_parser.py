@@ -16,13 +16,17 @@ def check(name, cond):
 
 
 print("categorize:")
-check("духи → аптека", categorize("Духи женские Gucci Flora") == "pharmacy")
-check("масло для губ → аптека (не еда)", categorize("Блеск масло для губ") == "pharmacy")
+check("духи → красота", categorize("Духи женские Gucci Flora") == "beauty")
+check("блеск для губ → красота (не еда)", categorize("Блеск для губ матовый") == "beauty")
+check("гель для бровей → красота (не other)", categorize("Гель для укладки бровей фиксатор") == "beauty")
 check("электроплитка → электроника (не стройка)", categorize("Электроплитка настольная") == "electronics")
 check("смесь Kabrita → детям", categorize("Смесь молочная Kabrita 3 Gold") == "kids")
 check("iPhone → телефоны", categorize("Смартфон iPhone 15 128GB") == "phones")
 check("цемент → стройка", categorize("Цемент М400 мешок") == "building")
 check("кроссовки → одежда", categorize("Мужские кроссовки Nike") == "clothing")
+check("турник → спорт", categorize("Турник универсальный настенный") == "sports")
+check("женские часы → одежда/аксессуары", categorize("Женские часы с кожаным ремешком") == "clothing")
+check("колготки → одежда", categorize("Женские капроновые колготки теплые") == "clothing")
 
 print("extract_discount:")
 o, n, p = extract_discount("Скидка 30% на всё", 70000)
