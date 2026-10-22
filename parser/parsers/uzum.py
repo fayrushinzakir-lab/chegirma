@@ -14,9 +14,24 @@ import re
 from .base import Deal, categorize
 
 QUERIES = [
-    "chegirma", "aksiya", "telefon", "noutbuk", "televizor", "kiyim", "poyabzal",
-    "kosmetika", "parfum", "oziq ovqat", "bolalar", "kitob", "sport", "mebel",
-    "maishiy texnika", "aksessuar", "soat", "sumka",
+    # распродажи
+    "chegirma", "aksiya",
+    # техника и телефоны
+    "telefon", "noutbuk", "televizor", "planshet", "quloqchin", "maishiy texnika",
+    "muzlatgich", "changyutgich", "kir yuvish mashinasi", "konditsioner",
+    # одежда и обувь
+    "kiyim", "poyabzal", "krossovka", "kurtka", "palto", "koylak", "ayollar kiyim",
+    "erkaklar kiyim",
+    # красота и уход
+    "kosmetika", "parfum", "atir", "krem", "shampun", "vitamin",
+    # продукты, напитки, бытовая химия
+    "oziq ovqat", "shokolad", "qahva", "choy", "ichimlik", "maishiy kimyo", "idish",
+    # дети, книги, спорт
+    "bolalar", "oyinchoq", "kitob", "sport", "trenajyor", "velosiped",
+    # дом, мебель, авто, инструмент, стройка
+    "mebel", "uy uchun", "avto aksessuar", "asbob", "qurilish mollari",
+    # аксессуары
+    "aksessuar", "soat", "sumka", "ryukzak",
 ]
 
 

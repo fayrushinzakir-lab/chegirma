@@ -3,7 +3,20 @@
 Один файл `main.ts` обслуживает вход: `/auth/start`, `/auth/status`, webhook бота `/tg-webhook`.
 Хранилище — встроенное Deno KV. Публичный URL — бесплатно.
 
-## Деплой (10 минут)
+## Деплой одной командой (рекомендую)
+
+```bash
+DENO_DEPLOY_TOKEN=<токен> TG_BOT_TOKEN=<токен_бота> bash backend/deno/deploy.sh
+```
+
+- Токен Deno: **https://dash.deno.com/account#access-tokens** → *New Access Token*.
+- Скрипт сам зальёт код, выставит env-переменные, привяжет webhook бота и
+  напечатает стабильный URL (`https://chegirmalar-auth.deno.dev`) + готовую
+  команду сборки приложения. `SESSION_SECRET` генерируется и хранится локально
+  (`.session_secret`, в gitignore) — сессии не сбрасываются при повторных деплоях.
+- `deno`/`deployctl` уже установлены в `~/.deno/bin`.
+
+## Деплой через дашборд (альтернатива, 10 минут)
 
 1. Зайдите на **https://dash.deno.com** → войдите через GitHub.
 2. **New Project** → **Deploy from GitHub** → выберите репозиторий `chegirma`.

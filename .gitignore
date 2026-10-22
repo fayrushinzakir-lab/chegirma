@@ -2,6 +2,8 @@
 .secrets/
 *.secret
 secrets.env
+.session_secret
+backend/deno/.session_secret
 .env
 *.apk
 *.aab
