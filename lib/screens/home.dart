@@ -25,8 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    DealsStore.I.load().then((_) => DealsStore.I.loadFavs());
-    DealsStore.I.loadFavs();
+    DealsStore.I.load();
   }
 
   void _open(Deal d) => Navigator.of(context).push(PageRouteBuilder(
@@ -83,8 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         const Text('Лучшее рядом с вами', style: T.section),
                         const SizedBox(height: 3),
-                        Text(store.loading && store.all.isEmpty ? 'загружаем скидки…' : updatedAgo(store.generatedAt),
-                            style: T.meta),
+                        Text(
+                            store.loading && store.all.isEmpty
+                                ? 'загружаем скидки…'
+                                : (store.fromCache && !store.loading
+                                    ? 'нет сети · показаны сохранённые'
+                                    : updatedAgo(store.generatedAt)),
+                            style: T.meta.copyWith(
+                                color: store.fromCache && !store.loading ? C.yellow : null)),
                       ]),
                       PressScale(
                         onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>

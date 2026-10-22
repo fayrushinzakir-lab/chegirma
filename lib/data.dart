@@ -28,8 +28,6 @@ class DealsStore extends ChangeNotifier {
   final Set<String> favIds = {};
   final Map<String, Deal> _favSnap = {}; // снимки, чтобы не пропадали из ленты
 
-  Future<void> loadFavs() async {}
-
   /// Восстановление из хранилища (вызывается в main до runApp).
   void restore() {
     favIds.addAll(Persist.getList('favIds'));
@@ -43,7 +41,29 @@ class DealsStore extends ChangeNotifier {
     }
     final w = Persist.getList('watchlist');
     if (w.isNotEmpty) { watchlist..clear()..addAll(w); }
+    _restoreCache();
   }
+
+  /// Мгновенно показываем последнюю сохранённую ленту (офлайн / холодный старт).
+  void _restoreCache() {
+    final raw = Persist.readBlob('deals_cache.json');
+    if (raw == null) return;
+    try {
+      final data = json.decode(raw) as Map<String, dynamic>;
+      final deals = (data['deals'] as List)
+          .map((e) => Deal.fromJson(e as Map<String, dynamic>))
+          .where((d) => d.newPrice != null && d.title.isNotEmpty)
+          .toList();
+      for (final d in deals) { d.favorite = favIds.contains(d.id); }
+      all = deals;
+      final g = data['generatedAt'];
+      generatedAt = g is String ? DateTime.tryParse(g) : null;
+      fromCache = true;
+    } catch (_) {}
+  }
+
+  /// true, пока показываем кэш и ещё не получили свежие данные из сети.
+  bool fromCache = false;
 
   void toggleFav(Deal d) {
     d.favorite = !d.favorite;
@@ -166,14 +186,16 @@ class DealsStore extends ChangeNotifier {
 
   Future<void> load({bool force = false}) async {
     if (loading) return;
-    if (all.isNotEmpty && !force) return;
+    // Кэш уже показан — всё равно тихо обновляемся из сети.
+    if (all.isNotEmpty && !force && !fromCache) return;
     loading = true;
     error = null;
     notifyListeners();
     try {
       final r = await http.get(Uri.parse(kDealsUrl)).timeout(const Duration(seconds: 20));
       if (r.statusCode != 200) throw 'HTTP ${r.statusCode}';
-      final data = json.decode(utf8.decode(r.bodyBytes)) as Map<String, dynamic>;
+      final body = utf8.decode(r.bodyBytes);
+      final data = json.decode(body) as Map<String, dynamic>;
       final deals = (data['deals'] as List)
           .map((e) => Deal.fromJson(e as Map<String, dynamic>))
           .where((d) => d.newPrice != null && d.title.isNotEmpty)
@@ -184,8 +206,11 @@ class DealsStore extends ChangeNotifier {
       all = deals;
       final g = data['generatedAt'];
       generatedAt = g is String ? DateTime.tryParse(g) : null;
+      fromCache = false;
+      Persist.writeBlob('deals_cache.json', body); // офлайн-кэш
     } catch (e) {
-      error = '$e';
+      // Сеть недоступна, но кэш есть — не считаем это ошибкой для UI.
+      error = all.isEmpty ? '$e' : null;
       if (kDebugMode) debugPrint('DealsStore.load error: $e');
     } finally {
       loading = false;
