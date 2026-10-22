@@ -24,14 +24,23 @@ class DealsStore extends ChangeNotifier {
   String? error;
   DateTime? generatedAt;
 
-  // ───────── Избранное (сохраняется) ─────────
+  // ───────── Избранное (сохраняется со снимком товара) ─────────
   final Set<String> favIds = {};
+  final Map<String, Deal> _favSnap = {}; // снимки, чтобы не пропадали из ленты
 
   Future<void> loadFavs() async {}
 
   /// Восстановление из хранилища (вызывается в main до runApp).
   void restore() {
     favIds.addAll(Persist.getList('favIds'));
+    final saved = Persist.get<List>('favDeals') ?? const [];
+    for (final j in saved) {
+      try {
+        final d = Deal.fromJson(Map<String, dynamic>.from(j as Map))..favorite = true;
+        _favSnap[d.id] = d;
+        favIds.add(d.id);
+      } catch (_) {}
+    }
     final w = Persist.getList('watchlist');
     if (w.isNotEmpty) { watchlist..clear()..addAll(w); }
   }
@@ -40,14 +49,21 @@ class DealsStore extends ChangeNotifier {
     d.favorite = !d.favorite;
     if (d.favorite) {
       favIds.add(d.id);
+      _favSnap[d.id] = d;
     } else {
       favIds.remove(d.id);
+      _favSnap.remove(d.id);
     }
     Persist.set('favIds', favIds.toList());
+    Persist.set('favDeals', _favSnap.values.map((e) => e.toJson()).toList());
     notifyListeners();
   }
 
-  List<Deal> get favorites => all.where((d) => favIds.contains(d.id)).toList();
+  /// Избранное: свежая версия из ленты, иначе сохранённый снимок.
+  List<Deal> get favorites {
+    final byId = {for (final d in all) d.id: d};
+    return favIds.map((id) => byId[id] ?? _favSnap[id]).whereType<Deal>().toList();
+  }
 
   // ───────── Список покупок (сохраняется) ─────────
   final List<String> watchlist = ['Кофе Jacobs', 'Подгузники Huggies', 'Шуруповёрт'];
@@ -107,7 +123,8 @@ class DealsStore extends ChangeNotifier {
   List<Deal> byCategory(String? cat) {
     var list = all.where((d) {
       if (cat != null && d.category != cat) return false;
-      if (selectedCity != null && d.city != selectedCity) return false;
+      // по городу фильтруем только гео-товары; онлайн-магазины (без города) — всегда
+      if (selectedCity != null && d.city.isNotEmpty && d.city != selectedCity) return false;
       return true;
     }).toList();
     list.sort((a, b) => quality(b).compareTo(quality(a)));

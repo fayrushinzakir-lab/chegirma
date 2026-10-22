@@ -85,7 +85,24 @@
       "Bash(/usr/bin/curl -s -w ' HTTP %{http_code}\\\\n' -A 'Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0.0.0 Safari/537.36' -H 'Origin: https://uzum.uz' -H 'Content-Type: application/json' -X POST -d '{\"grant_type\":\"anonymous\"}' https://api.uzum.uz/api/auth/token)",
       "Bash(/usr/bin/curl -s -A Mozilla/5.0 -X POST https://graphql.uzum.uz/ -H 'Content-Type: application/json' -d '{\"query\":\"{__typename}\"}')",
       "Bash(curl -s https://graphql.uzum.uz/ -H 'Content-Type: application/json' -H 'User-Agent: Mozilla/5.0 Chrome/120' -H 'x-iid: 00000000-0000-0000-0000-000000000000' -H 'Accept-Language: ru-RU' --data '{\"query\":\"query{makeSearch\\(query:\\\\\"\\\\\",filters:[],categoryId:1,showAdultContent:TRUE,pagination:{offset:0,limit:3}\\){items{catalogCard{productId title minSellPrice minFullPrice characteristicValues{title}}}}}\"}' -w '\\\\n[HTTP %{http_code}]\\\\n' --max-time 20)",
-      "Bash(curl -s \"https://mobile.olcha.uz/api/v2/products?page=1\" -H \"Accept: application/json\" -H \"Accept-Language: ru\")"
+      "Bash(curl -s \"https://mobile.olcha.uz/api/v2/products?page=1\" -H \"Accept: application/json\" -H \"Accept-Language: ru\")",
+      "Bash(curl -sL -o .secrets/bin/cloudflared \"https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-arm64.tgz\" -w \"http=%{http_code} size=%{size_download}\\\\n\")",
+      "Bash(mv cloudflared *)",
+      "Bash(tar xzf *)",
+      "Bash(chmod +x cloudflared)",
+      "Bash(./cloudflared --version)",
+      "Bash(lsof -nP -iTCP:8000 -sTCP:LISTEN)",
+      "Bash(curl -s -m 5 http://localhost:8000/)",
+      "Bash(pkill -9 -f \"backend/server.py\")",
+      "Bash(lsof -ti:8787)",
+      "Bash(xargs kill -9)",
+      "Bash(echo \"осталось на 8787: $\\(lsof -ti:8787)",
+      "Bash(curl -s -m 5 -X POST http://localhost:8787/auth/start)",
+      "Bash(curl -s -m 10 -X POST https://jimmy-coal-studied-brilliant.trycloudflare.com/auth/start)",
+      "Bash(curl -s -m 10 \"https://jimmy-coal-studied-brilliant.trycloudflare.com/auth/status?nonce=test\")",
+      "Bash(curl -s -m 8 https://jimmy-coal-studied-brilliant.trycloudflare.com/)",
+      "Bash(pkill -9 -f \"cloudflared tunnel\")",
+      "Bash(.secrets/bin/cloudflared tunnel *)"
     ]
   }
 }

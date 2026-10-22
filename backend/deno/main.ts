@@ -8,7 +8,11 @@
 //   BOT_USERNAME   — chegirma_login_bot
 
 const TOKEN = Deno.env.get("TG_BOT_TOKEN") ?? "";
-const SECRET = Deno.env.get("SESSION_SECRET") ?? "dev-secret-change-me";
+// Безопасно: если секрет не задан в env — случайный на запуск (не фиксированный дефолт).
+const SECRET = Deno.env.get("SESSION_SECRET") ?? crypto.randomUUID() + crypto.randomUUID();
+if (!Deno.env.get("SESSION_SECRET")) {
+  console.warn("[warn] SESSION_SECRET не задан — сессии будут сбрасываться при рестарте. Задайте env.");
+}
 const BOT = Deno.env.get("BOT_USERNAME") ?? "chegirma_login_bot";
 const API = `https://api.telegram.org/bot${TOKEN}`;
 

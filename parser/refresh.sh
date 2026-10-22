@@ -15,11 +15,6 @@ if git diff --staged --quiet; then
   echo "$(date) изменений нет" >> "$LOG"
 else
   git commit -q -m "data: автообновление скидок [skip ci]" >> "$LOG" 2>&1
-  TOKEN=$(gh auth token 2>/dev/null)
-  if [ -n "$TOKEN" ]; then
-    git push -q "https://x-access-token:${TOKEN}@github.com/fayrushinzakir-lab/chegirma.git" main >> "$LOG" 2>&1
-    echo "$(date) запушено" >> "$LOG"
-  else
-    git push -q origin main >> "$LOG" 2>&1
-  fi
+  # пуш через git-credential-helper (gh), без токена в аргументах
+  git push -q origin main >> "$LOG" 2>&1 && echo "$(date) запушено" >> "$LOG"
 fi

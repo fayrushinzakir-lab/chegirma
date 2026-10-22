@@ -164,7 +164,8 @@ for _c, _kw in {
     "phones": ["чехол", "g'ilof", "zaryadka", "кабель для заряд", "адаптер питан", "смарт-час", "smart soat", "защитное стекло"],
     "electronics": ["колонк", "kolonka", "наушник", "quloqchin", "роутер", "router", "проектор", "видеонаблюд",
                     "принтер", "printer", "фен", "утюг", "dazmol", "блендер", "миксер", "мясорубк", "вентилятор",
-                    "обогреват", "isitgich", "электросамокат", "elektr"],
+                    "обогреват", "isitgich", "электросамокат", "elektr", "электроплит", "варочн", "конфорк",
+                    "индукционн", "электропеч", "электрочайник", "кофемашин", "соковыжим"],
     "clothing": ["кросс", "ботас", "туфл", "кеды", "шапк", "перчатк", "remen", "ремень", "галстук", "бель", "носки",
                  "термобель", "спецодежд", "халат", "юбк", "костюм", "kostyum", "majburiy"],
     "food": ["кондитер", "торт", "shirinlik", "мороженое", "muzqaymoq", "специи", "ziravor", "соус", "кетчуп",
@@ -211,17 +212,25 @@ def _norm_key(d: Deal) -> str:
     return f"{d.source}:{d.store.lower()}:{t}"
 
 
+def _norm_title(t: str) -> str:
+    return re.sub(r"[^a-zа-я0-9ё]", "", (t or "").lower())[:45]
+
+
 def dedupe(deals: list[Deal]) -> list[Deal]:
+    def _better(a: Deal, b: Deal) -> Deal:
+        sa = (a.discount_percent or 0, a.new_price or 0)
+        sb = (b.discount_percent or 0, b.new_price or 0)
+        return a if sa >= sb else b
+
+    # 1) дубли внутри источника (source:store:title)
     seen: dict[str, Deal] = {}
     for d in deals:
         k = _norm_key(d)
-        # оставляем вариант с бОльшей известной скидкой / с ценой
-        prev = seen.get(k)
-        if prev is None:
-            seen[k] = d
-        else:
-            score = (d.discount_percent or 0, d.new_price or 0)
-            pscore = (prev.discount_percent or 0, prev.new_price or 0)
-            if score > pscore:
-                seen[k] = d
-    return list(seen.values())
+        seen[k] = d if k not in seen else _better(seen[k], d)
+
+    # 2) межисточниковые точные дубли (одинаковое название + та же цена)
+    cross: dict[str, Deal] = {}
+    for d in seen.values():
+        k = f"{_norm_title(d.title)}:{d.new_price}"
+        cross[k] = d if k not in cross else _better(cross[k], d)
+    return list(cross.values())

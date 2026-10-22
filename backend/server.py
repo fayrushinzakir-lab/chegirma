@@ -34,11 +34,28 @@ try:
 except Exception:  # noqa: BLE001
     _CTX = ssl.create_default_context()
 
-# nonce -> {"status": "pending"|"authorized", "phone","name"}
+# nonce -> {"status": "pending"|"authorized", "phone","name", "ts": epoch}
 _NONCES: dict[str, dict] = {}
 # chat_id -> nonce
 _CHATS: dict[int, str] = {}
+_RATE: dict[str, list] = {}  # ip -> [timestamps]
 _LOCK = threading.Lock()
+NONCE_TTL = 600  # сек
+
+
+def _prune(now: float) -> None:
+    for k in [k for k, v in _NONCES.items() if now - v.get("ts", now) > NONCE_TTL]:
+        _NONCES.pop(k, None)
+    for ip in list(_RATE):
+        _RATE[ip] = [t for t in _RATE[ip] if now - t < 60]
+        if not _RATE[ip]:
+            _RATE.pop(ip, None)
+
+
+def _rate_ok(ip: str, now: float) -> bool:
+    lst = _RATE.setdefault(ip, [])
+    lst.append(now)
+    return len([t for t in lst if now - t < 60]) <= 15
 
 
 def _tg(method: str, payload: dict) -> dict:
@@ -84,7 +101,7 @@ def _poll_loop():
                     with _LOCK:
                         nonce = _CHATS.get(chat_id)
                         if nonce:
-                            _NONCES[nonce] = {"status": "authorized", "phone": phone, "name": name}
+                            _NONCES[nonce] = {"status": "authorized", "phone": phone, "name": name, "ts": time.time()}
                     _tg("sendMessage", {"chat_id": chat_id,
                                         "text": "✅ Готово! Вернитесь в приложение.",
                                         "reply_markup": {"remove_keyboard": True}})
@@ -124,9 +141,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if urllib.parse.urlparse(self.path).path == "/auth/start":
-            nonce = os.urandom(16).hex()
+            now = time.time()
+            ip = self.client_address[0]
             with _LOCK:
-                _NONCES[nonce] = {"status": "pending"}
+                _prune(now)
+                if not _rate_ok(ip, now):
+                    return self._send({"error": "too many requests"}, 429)
+                nonce = os.urandom(16).hex()
+                _NONCES[nonce] = {"status": "pending", "ts": now}
             return self._send({"nonce": nonce,
                                "botUrl": f"https://t.me/{BOT_USERNAME}?start={nonce}",
                                "botUsername": BOT_USERNAME})

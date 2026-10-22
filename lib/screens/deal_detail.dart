@@ -26,6 +26,18 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
     await launchUrl(Uri.parse('tel:${widget.deal.phone}'));
   }
 
+  Future<void> _route() async {
+    final d = widget.deal;
+    Uri uri;
+    if (d.lat != null && d.lon != null) {
+      uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lon}');
+    } else {
+      final q = Uri.encodeComponent('${d.store} ${d.city} ${d.address}'.trim());
+      uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$q');
+    }
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   Future<void> _share() async {
     final d = widget.deal;
     final pct = d.percent != null ? ' −${d.percent}%' : '';
@@ -133,6 +145,18 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                         const SizedBox(height: 14),
                       ],
                       _infoRow(Symbols.link, 'Источник', d.source == 'olx' ? 'OLX.uz' : d.source),
+                      if (d.lat != null || d.address.isNotEmpty) ...[
+                        const SizedBox(height: 14),
+                        const Divider(height: 1, color: C.border),
+                        const SizedBox(height: 10),
+                        PressScale(onTap: _route, child: Row(children: const [
+                          Icon(Symbols.directions, size: 20, color: C.green),
+                          SizedBox(width: 12),
+                          Text('Построить маршрут', style: TextStyle(fontFamily: kFont, fontSize: 14, fontWeight: FontWeight.w700, color: C.green)),
+                          Spacer(),
+                          Icon(Symbols.chevron_right, size: 20, color: C.green),
+                        ])),
+                      ],
                     ])),
                     ..._priceHistory(d),
                     ..._similar(d),

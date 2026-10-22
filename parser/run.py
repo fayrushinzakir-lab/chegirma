@@ -76,16 +76,29 @@ def main() -> int:
     now = datetime.now(timezone.utc)
     all_deals: list[Deal] = []
 
+    import time as _time
     for name, fn in SOURCES:
         print(f"→ {name} …")
-        try:
-            got = fn()
+        got = None
+        for attempt in (1, 2):  # один ретрай при падении
+            try:
+                got = fn()
+                break
+            except Exception as e:  # noqa: BLE001
+                print(f"  ! источник {name} упал (попытка {attempt}): {e}")
+                _time.sleep(5)
+        if got:
             print(f"  {len(got)} сырых")
             all_deals.extend(got)
-        except Exception as e:  # noqa: BLE001
-            print(f"  ! источник {name} упал: {e}")
+        elif got is None:
+            print(f"  ! источник {name} пропущен")
 
-    # фильтр качества: валидная цена, есть фото, не истёкшие, не абсурд
+    # минимальная правдоподобная цена по категории (отсекаем «цемент за 280 сум»)
+    _FLOOR = {
+        "phones": 15000, "electronics": 15000, "furniture": 30000, "building": 5000,
+        "auto": 20000, "plumbing": 10000, "tools": 15000, "restaurants": 10000,
+    }
+
     def _ok(d: Deal) -> bool:
         if not d.new_price or d.new_price < 1000:
             return False
@@ -98,6 +111,9 @@ def main() -> int:
             return False
         # абсурдная старая цена
         if d.old_price and d.new_price and (d.old_price <= d.new_price or d.old_price > d.new_price * 15):
+            return False
+        # абсурдно низкая цена для категории
+        if d.new_price < _FLOOR.get(d.category, 0):
             return False
         return True
 

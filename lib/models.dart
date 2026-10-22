@@ -135,6 +135,15 @@ class Deal {
         fair: j['fair'] is bool ? j['fair'] as bool : null,
       );
 
+  /// Для сохранения избранного (снимок, чтобы не пропадал из ленты).
+  Map<String, dynamic> toJson() => {
+        'id': id, 'title': title, 'store': store, 'source': source, 'category': category,
+        'oldPrice': oldPrice, 'newPrice': newPrice, 'discountPercent': discountPercent,
+        'city': city, 'address': address, 'imageUrl': imageUrl, 'url': url, 'endsAt': endsAt,
+        'lat': lat, 'lon': lon, 'phone': phone, 'seller': seller,
+        'priceHistory': priceHistory, 'fair': fair,
+      };
+
   static double? _asDouble(dynamic v) {
     if (v == null) return null;
     if (v is num) return v.toDouble();
